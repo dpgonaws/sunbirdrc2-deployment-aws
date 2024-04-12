@@ -9,6 +9,7 @@ import { vpcStack } from "../lib/vpc-stack";
 import { rdsStack } from "../lib/rds-stack";
 import { eksec2Stack } from "../lib/eks-ec2-stack";
 import { helmStack } from "../lib/helm-stack";
+import { EbsCsiRoleStack } from '../lib/EbsCsiRoleStack';
 
 const config = getConfig();
 const app = new cdk.App();
@@ -24,6 +25,10 @@ const MY_AWS_ENV_STACK_PROPS: AwsEnvStackProps = {
   },
   config: config,
 };
+
+//provison role
+
+const csiRole = new EbsCsiRoleStack(app, "ebscsirolerc2",MY_AWS_ENV_STACK_PROPS);
 
 // Provision required VPC network & subnets
 const infra = new vpcStack(app, "vpcstackrc2", MY_AWS_ENV_STACK_PROPS);

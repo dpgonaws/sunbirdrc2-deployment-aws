@@ -123,6 +123,9 @@ export class eksec2Stack extends cdk.Stack {
             }
         );
 
+        
+
+
 
         new cdk.CfnOutput(this, "EKS Cluster Name", {
             value: this.eksCluster.clusterName,
