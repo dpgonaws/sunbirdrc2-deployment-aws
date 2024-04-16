@@ -6,6 +6,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { ConfigProps } from "./config";
 import { KubectlV29Layer } from '@aws-cdk/lambda-layer-kubectl-v29'
+import { CfnAutoScalingGroup } from "aws-cdk-lib/aws-autoscaling";
 
 
 
@@ -55,7 +56,7 @@ export class eksec2Stack extends cdk.Stack {
         this.eksCluster = new eks.Cluster(this, "eksec2Cluster", {
             vpc: vpc,
             vpcSubnets: [{ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }],
-            defaultCapacity: 1,
+            defaultCapacity: 3,
             defaultCapacityInstance: new ec2.InstanceType("t2.medium"),
             kubectlLayer: new KubectlV29Layer(this, "kubectl"),
             version: eks.KubernetesVersion.V1_29,
@@ -66,6 +67,7 @@ export class eksec2Stack extends cdk.Stack {
             mastersRole: iamRole,
             outputClusterName: true,
             outputConfigCommand: true,
+
             albController: {
                 version: eks.AlbControllerVersion.V2_5_1,
                 repository: "public.ecr.aws/eks/aws-load-balancer-controller",
@@ -73,7 +75,43 @@ export class eksec2Stack extends cdk.Stack {
 
         });
 
+        console.log(this.eksCluster.openIdConnectProvider.openIdConnectProviderIssuer);
+        console.log(this.eksCluster.clusterOpenIdConnectIssuer);
+        console.log(this.eksCluster.clusterOpenIdConnectIssuerUrl);
+        const key1 = this.eksCluster.openIdConnectProvider.openIdConnectProviderIssuer;
 
+        const stringEquals = new cdk.CfnJson(this, 'ConditionJson', {
+            value: {
+                [`${key1}:sub`]: `system:serviceaccount:kube-system:ebs-csi-controller-sa-rc2`,
+                [`${key1}:aud`]: `sts.amazonaws.com`                       
+            },
+          });
+
+        // Define an IAM Role
+        const oidcEKSCSIRole = new iam.Role(this, "OIDCRole", {
+            assumedBy: new iam.FederatedPrincipal(
+                `arn:aws:iam::${this.account}:oidc-provider/${this.eksCluster.clusterOpenIdConnectIssuer}`,
+                {
+                    StringEquals: stringEquals,
+
+                },
+                "sts:AssumeRoleWithWebIdentity"
+            ),
+        });
+
+        // Attach a managed policy to the role
+        oidcEKSCSIRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonEBSCSIDriverPolicy"))
+        //ebs_csi_addon_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AmazonEBSCSIDriverPolicy"))
+
+
+        // Define the service account
+        const serviceAccount = this.eksCluster.addServiceAccount('ebscsiServiceAccount', {
+            name: "ebs-csi-controller-sa-rc2",
+            namespace: "kube-system",
+            annotations: {
+                "eks.amazonaws.com/role-arn": oidcEKSCSIRole.roleArn,
+            }
+        });
 
         /*
         this.eksCluster.addNodegroupCapacity("custom-node-group", {
@@ -115,16 +153,42 @@ export class eksec2Stack extends cdk.Stack {
 
 
 
+
+        /*
+                      
+        ebs_csi_addon_role = iam.Role(
+            self,
+            'EbsCsiAddonRole',
+            # for Role's Trust relationships
+            assumed_by=iam.FederatedPrincipal(
+                federated=oidc_provider_arn,
+                conditions={
+                    'StringEquals': {
+                        f'{oidc_provider_url.replace("https://", "")}:sub': 'system:serviceaccount:kube-system:ebs-csi-controller-sa-rc2'
+                    }
+                },
+                assume_role_action='sts:AssumeRoleWithWebIdentity'
+            )
+        )*/
+
+
+
         const ebscsi = new eks.CfnAddon(this, "addonEbsCsi",
             {
                 addonName: "aws-ebs-csi-driver",
                 clusterName: this.eksCluster.clusterName,
-                serviceAccountRoleArn: "arn:aws:iam::370803901956:role/AmazonEKS_EBS_CSI_DriverRole"
+                serviceAccountRoleArn: oidcEKSCSIRole.roleArn
             }
         );
 
-        
 
+        new cdk.CfnOutput(this, String("OIDC-issuer"), {
+            value: this.eksCluster.clusterOpenIdConnectIssuer,
+        });
+
+        new cdk.CfnOutput(this, String("OIDC-issuerURL"), {
+            value: this.eksCluster.clusterOpenIdConnectIssuerUrl,
+        });
 
 
         new cdk.CfnOutput(this, "EKS Cluster Name", {
