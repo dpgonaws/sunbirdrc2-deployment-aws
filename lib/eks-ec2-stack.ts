@@ -56,7 +56,7 @@ export class eksec2Stack extends cdk.Stack {
         this.eksCluster = new eks.Cluster(this, "eksec2Cluster", {
             vpc: vpc,
             vpcSubnets: [{ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }],
-            defaultCapacity: 3,
+            defaultCapacity: 15,
             defaultCapacityInstance: new ec2.InstanceType("t2.medium"),
             kubectlLayer: new KubectlV29Layer(this, "kubectl"),
             version: eks.KubernetesVersion.V1_29,
@@ -82,10 +82,10 @@ export class eksec2Stack extends cdk.Stack {
 
         const stringEquals = new cdk.CfnJson(this, 'ConditionJson', {
             value: {
-                [`${key1}:sub`]: `system:serviceaccount:kube-system:ebs-csi-controller-sa-rc2`,
-                [`${key1}:aud`]: `sts.amazonaws.com`                       
+                [`${key1}:sub`]: `system:serviceaccount:kube-system:ebs-csi-controller-sa`,
+                [`${key1}:aud`]: `sts.amazonaws.com`
             },
-          });
+        });
 
         // Define an IAM Role
         const oidcEKSCSIRole = new iam.Role(this, "OIDCRole", {
@@ -103,15 +103,23 @@ export class eksec2Stack extends cdk.Stack {
         oidcEKSCSIRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonEBSCSIDriverPolicy"))
         //ebs_csi_addon_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AmazonEBSCSIDriverPolicy"))
 
-
-        // Define the service account
-        const serviceAccount = this.eksCluster.addServiceAccount('ebscsiServiceAccount', {
-            name: "ebs-csi-controller-sa-rc2",
-            namespace: "kube-system",
-            annotations: {
-                "eks.amazonaws.com/role-arn": oidcEKSCSIRole.roleArn,
+        const ebscsi = new eks.CfnAddon(this, "addonEbsCsi",
+            {
+                addonName: "aws-ebs-csi-driver",
+                clusterName: this.eksCluster.clusterName,
+                serviceAccountRoleArn: oidcEKSCSIRole.roleArn
             }
-        });
+        );
+
+        /*
+                // Define the service account
+                const serviceAccount = this.eksCluster.addServiceAccount('ebscsiServiceAccount', {
+                    name: "ebs-csi-controller-sa-rc2",
+                    namespace: "kube-system",
+                    annotations: {
+                        "eks.amazonaws.com/role-arn": oidcEKSCSIRole.roleArn,
+                    }
+                });*/
 
         /*
         this.eksCluster.addNodegroupCapacity("custom-node-group", {
@@ -173,13 +181,6 @@ export class eksec2Stack extends cdk.Stack {
 
 
 
-        const ebscsi = new eks.CfnAddon(this, "addonEbsCsi",
-            {
-                addonName: "aws-ebs-csi-driver",
-                clusterName: this.eksCluster.clusterName,
-                serviceAccountRoleArn: oidcEKSCSIRole.roleArn
-            }
-        );
 
 
         new cdk.CfnOutput(this, String("OIDC-issuer"), {

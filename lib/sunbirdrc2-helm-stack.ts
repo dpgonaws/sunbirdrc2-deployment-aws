@@ -2,8 +2,6 @@ import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as eks from "aws-cdk-lib/aws-eks";
 import * as helm from "aws-cdk-lib/aws-eks";
-import * as iam from "aws-cdk-lib/aws-iam";
-import * as pipelines from "aws-cdk-lib/pipelines"
 import * as sm from "aws-cdk-lib/aws-secretsmanager";
 import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
@@ -28,6 +26,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
         const RDS_PASSWORD = props.RDS_PASSWORD;
+        
 
         const secretName = sm.Secret.fromSecretAttributes(this, "ImportedSecret", {
             secretCompleteArn: rdssecretARN,
@@ -39,13 +38,18 @@ export class sunbirdrc2helmStack extends cdk.Stack {
 
         const base64encodedDBpass = cdk.Fn.base64(RDS_PASSWORD);
 
-
         const chart = props.config.CHART;
         const repository = props.config.REPOSITORY;
         const namespace = props.config.NAMESPACE;
-        const release = props.config.RELEASE;
+        const release = `${props.config.RELEASE}-sc`;
         const rdsHost = props.rdsHost;
         const rdsuser = props.RDS_USER;
+        const dbName = "registry";
+        const logLevel = "DEBUG";
+        const credentialDBName = "sunbirdrc";
+
+        const dbURL = `postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName}`;
+        const base64encodedDBURL = cdk.Fn.base64(dbURL);
 
         // deploy SUn Bird RC 2.0
         new helm.HelmChart(this, "cdksbrc2helm", {
@@ -60,12 +64,12 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 global: {
                     database:
                     {
-                        host: "rdsstackrc2-databaseb269d8bb-l9qctqednyef.cluster-cveklit2rj4m.ap-south-1.rds.amazonaws.com",
-                        user: "sbrc2user"
+                        host: rdsHost,
+                        user: rdsuser
                     },
                     registry:
                     {
-                        database: "registry",
+                        database: dbName,
                         search_provider: "dev.sunbirdrc.registry.service.NativeSearchService",
                         signature_provider: "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl",
                         sso:
@@ -77,7 +81,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                         signature_enabled: true,
                         keycloak_user_set_password: false,
                         base_apis_enabled: false,
-                        log_level: "DEBUG",
+                        log_level: logLevel,
                         enable_external_templates: true,
                         enable_async: false,
                         enable_authentication: true,
@@ -111,12 +115,12 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                     },
                     vault:
                     {
-                        address: "http://sbrc2-vault:8200",
-                        base_url: "http://sbrc2-vault:8200/v1",
-                        root_path: "http://sbrc2-vault:8200/v1/kv",
+                        address: `http://${release}-vault:8200`, //TBC post deployment
+                        base_url: `http://${release}-vault:8200/v1`,
+                        root_path: `http://${release}-vault:8200/v1/kv`,
                         vault_timeout: 5000,
                         vault_proxy: false,
-                        vault_token: "hvs.iP1pMDQYGT9AEHDShB0BPOil"
+                        vault_token: "" // tobe fetched from helm
                     },
                     sunbird:
                     {
@@ -126,22 +130,17 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                     },
                     secrets:
                     {
-                        DB_PASSWORD: "TkxoTCpJLWU1NGU=",
+                        DB_PASSWORD: base64encodedDBpass,
                         ELASTIC_SEARCH_PASSWORD: "",
-                        KEYCLOAK_ADMIN_CLIENT_SECRET: "YjJiMGNhYjEtMjQzZC00ZTZlLTkzZTctOTAxNWZmNjZkZjJi",
+                        KEYCLOAK_ADMIN_CLIENT_SECRET: "",
                         KEYCLOAK_ADMIN_PASSWORD: "YWRtaW4xMjM=",
                         KEYCLOAK_DEFAULT_USER_PASSWORD: "YWRtaW5AMTIz",
-                        VAULT_SECRET_TOKEN: "aHZzLmlQMXBNRFFZR1Q5QUVIRFNoQjBCUE9pbA==",
-                        DB_URL: "cG9zdGdyZXM6Ly9zYnJjMnVzZXI6TkxoTCpJLWU1NGVAcmRzc3RhY2tyYzItZGF0YWJhc2ViMjY5ZDhiYi1sOXFjdHFlZG55ZWYuY2x1c3Rlci1jdmVrbGl0MnJqNG0uYXAtc291dGgtMS5yZHMuYW1hem9uYXdzLmNvbTo1NDMyL3N1bmJpcmRyYw==",
+                        VAULT_SECRET_TOKEN: "", // tobe fetched from helm
+                        //DB_URL: "cG9zdGdyZXM6Ly9zYnJjMnVzZXI6TkxoTCpJLWU1NGVAcmRzc3RhY2tyYzItZGF0YWJhc2ViMjY5ZDhiYi1sOXFjdHFlZG55ZWYuY2x1c3Rlci1jdmVrbGl0MnJqNG0uYXAtc291dGgtMS5yZHMuYW1hem9uYXdzLmNvbTo1NDMyL3N1bmJpcmRyYw==",
+                        DB_URL: base64encodedDBURL
                     }
                 },
             }
-        });
-
-
-
-        new cdk.CfnOutput(this, "DB Password", {
-            value: dbPass,
         });
     }
 }

@@ -8,9 +8,10 @@ import { ConfigProps, getConfig } from "../lib/config";
 import { vpcStack } from "../lib/vpc-stack";
 import { rdsStack } from "../lib/rds-stack";
 import { eksec2Stack } from "../lib/eks-ec2-stack";
-import { helmStack } from "../lib/helm-stack";
+import { helmvaultStack } from "../lib/helm-vault-stack";
 import { EbsCsiRoleStack } from '../lib/EbsCsiRoleStack';
 import { sunbirdrc2helmStack } from "../lib/sunbirdrc2-helm-stack";
+import { helmvaultinitStack } from "../lib/helm-vaultInit-stack.";
 
 
 const config = getConfig();
@@ -71,21 +72,28 @@ const csiRole = new EbsCsiRoleStack(app, "ebscsirolerc2", {
 });
 
 
-// Run HELM charts for the RC2 applications in the provisioned EKS cluster
-new helmStack(app, "helmstackrc2", {
+// Run HELM charts for the Vault applications in the provisioned EKS cluster
+new helmvaultStack(app, "helmstackrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
     },
     config: config,
-    vpc: infra.vpc,
-    rdssecret: rds.rdsSecret,
-    rdsHost: rds.rdsHost,
-    RDS_PASSWORD: config.RDS_PASSWORD,
-    RDS_USER: config.RDS_USER,
     eksCluster: eksCluster.eksCluster
 
 });
+
+// Run HELM charts for the Vault init applications in the provisioned EKS cluster
+new helmvaultinitStack(app, "helmsinitstackrc2", {
+    env: {
+        region: config.REGION,
+        account: config.ACCOUNT,
+    },
+    config: config,
+    eksCluster: eksCluster.eksCluster
+
+});
+
 
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
 new sunbirdrc2helmStack(app, "sunbirdrc2helmStackrc2", {
