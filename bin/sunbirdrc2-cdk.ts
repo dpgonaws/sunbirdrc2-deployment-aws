@@ -94,7 +94,6 @@ new helmvaultinitStack(app, "helmsinitstackrc2", {
 
 });
 
-
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
 new sunbirdrc2helmStack(app, "sunbirdrc2helmStackrc2", {
     env: {

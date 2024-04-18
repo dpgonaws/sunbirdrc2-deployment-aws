@@ -15,8 +15,6 @@ export interface sunbirdrc2helmStackProps extends cdk.StackProps {
     rdsHost: string;
     RDS_PASSWORD: string;
     RDS_USER: string;
-
-
 }
 
 export class sunbirdrc2helmStack extends cdk.Stack {
@@ -26,6 +24,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
         const RDS_PASSWORD = props.RDS_PASSWORD;
+        
 
 
         const secretName = sm.Secret.fromSecretAttributes(this, "ImportedSecret", {
@@ -52,13 +51,34 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const dbURL = `postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName}`;
         const base64encodedDBURL = cdk.Fn.base64(dbURL);
 
+        const registryChartName = "sunbird-r-charts";
+        const credentialingChartName = "sunbird-c-charts"
+        const rcchatName = "sunbird_rc_charts";
+
+        const registryReleaseName = `${release}-r`;
+        const credentialingReleaseName = `${release}-c`;
+        const rcReleaseName = `${release}`;
+
+        switch (repository) {
+            case "RC":
+                console.log("It is a Sunday.");
+                break;
+            case "R":
+                console.log("It is a Monday.");
+                break;
+            case "C":
+                console.log("It is a Tuesday.");
+                break;
+        }
+
+       
         // deploy SUn Bird RC 2.0
         new helm.HelmChart(this, "cdksbrc2helm", {
             cluster: eksCluster,
-            chart: chart,
+            chart: rcchatName,
             namespace: namespace,
             createNamespace: true,
-            release: release,
+            release: rcReleaseName,
             wait: false,
             repository: repository,
             values: {
