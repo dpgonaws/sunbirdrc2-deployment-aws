@@ -30,7 +30,7 @@ export const getConfig = (): ConfigProps => ({
   REPOSITORY: "https://dpgonaws.github.io/dpg-helm",
   NAMESPACE: "sbrc2",
   RELEASE: "sbrc2",
-  RDS_USER: process.env.RDS_USER || "sbrc2user",
+  RDS_USER: process.env.RDS_USER || "postgres",
   RDS_PASSWORD: process.env.RDS_PASSWORD || "",
   RDS_SEC_GRP_INGRESS: process.env.CIDR || "",
   ROLE_ARN: process.env.ROLE_ARN || "",

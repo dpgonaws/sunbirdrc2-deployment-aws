@@ -26,7 +26,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
         const RDS_PASSWORD = props.RDS_PASSWORD;
-        
+
 
         const secretName = sm.Secret.fromSecretAttributes(this, "ImportedSecret", {
             secretCompleteArn: rdssecretARN,
@@ -47,6 +47,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const dbName = "registry";
         const logLevel = "DEBUG";
         const credentialDBName = "sunbirdrc";
+        const vaultReleaseName = props.config.RELEASE;
 
         const dbURL = `postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName}`;
         const base64encodedDBURL = cdk.Fn.base64(dbURL);
@@ -115,9 +116,9 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                     },
                     vault:
                     {
-                        address: `http://${release}-vault:8200`, //TBC post deployment
-                        base_url: `http://${release}-vault:8200/v1`,
-                        root_path: `http://${release}-vault:8200/v1/kv`,
+                        address: `http://${vaultReleaseName}-vault:8200`, //TBC post deployment
+                        base_url: `http://${vaultReleaseName}-vault:8200/v1`,
+                        root_path: `http://${vaultReleaseName}-vault:8200/v1/kv`,
                         vault_timeout: 5000,
                         vault_proxy: false,
                         vault_token: "" // tobe fetched from helm
