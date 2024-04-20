@@ -20,13 +20,41 @@ export interface sunbirdrc2helmStackProps extends cdk.StackProps {
 export class sunbirdrc2helmStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: sunbirdrc2helmStackProps) {
         super(scope, id, props);
+
+        const registryChartName = "sunbird-r-charts";
+        const credentialingChartName = "sunbird-c-charts"
+        var rcchatName = "sunbird_rc_charts";
+
+        const registryReleaseName = `${release}-r`;
+        const credentialingReleaseName = `${release}-c`;
+        const rcReleaseName = `${release}`;
+
+
+
+        switch (repository) {
+            case "RC":
+                rcchatName = "sunbird_rc_charts";
+
+                this.SunBirdRC2DeployMethod(props, rcchatName);
+                break;
+            case "R":
+                rcchatName = "sunbird-r-charts";
+                break;
+            case "C":
+                rcchatName = "sunbird-c-charts";
+                break;
+        }
+
+
+        // deploy SUn Bird RC 2.0
+
+    }
+
+    private SunBirdRC2DeployMethod(props: sunbirdrc2helmStackProps, chartName: string, releaseName: string) {
         const vpc = props.vpc;
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
         const RDS_PASSWORD = props.RDS_PASSWORD;
-        
-
-
         const secretName = sm.Secret.fromSecretAttributes(this, "ImportedSecret", {
             secretCompleteArn: rdssecretARN,
         });
@@ -40,7 +68,6 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const chart = props.config.CHART;
         const repository = props.config.REPOSITORY;
         const namespace = props.config.NAMESPACE;
-        const release = `${props.config.RELEASE}-sc`;
         const rdsHost = props.rdsHost;
         const rdsuser = props.RDS_USER;
         const dbName = "registry";
@@ -51,35 +78,13 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const dbURL = `postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName}`;
         const base64encodedDBURL = cdk.Fn.base64(dbURL);
 
-        const registryChartName = "sunbird-r-charts";
-        const credentialingChartName = "sunbird-c-charts"
-        const rcchatName = "sunbird_rc_charts";
-
-        const registryReleaseName = `${release}-r`;
-        const credentialingReleaseName = `${release}-c`;
-        const rcReleaseName = `${release}`;
-
-        switch (repository) {
-            case "RC":
-                console.log("It is a Sunday.");
-                break;
-            case "R":
-                console.log("It is a Monday.");
-                break;
-            case "C":
-                console.log("It is a Tuesday.");
-                break;
-        }
-
-       
-        // deploy SUn Bird RC 2.0
         new helm.HelmChart(this, "cdksbrc2helm", {
             cluster: eksCluster,
-            chart: rcchatName,
+            chart: chartName,
             namespace: namespace,
             createNamespace: true,
-            release: rcReleaseName,
-            wait: false,
+            release: releaseName,
+            wait: true,
             repository: repository,
             values: {
                 global: {
@@ -162,6 +167,70 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                     }
                 },
             }
+        });
+    }
+    private VaultDeployMethod(props: sunbirdrc2helmStackProps) {
+
+        const eksCluster = props.eksCluster;
+        const vaultRepository = "https://helm.releases.hashicorp.com/";
+        const vaultVersion = "0.24.0";
+        const namespace = props.config.NAMESPACE;
+        const release = props.config.RELEASE;
+
+        //create vault
+        new helm.HelmChart(this, "cdkhelm", {
+            cluster: eksCluster,
+            chart: "vault",
+            namespace: namespace,
+            createNamespace: true,
+            release: release,
+            version: vaultVersion,
+            wait: true,
+            repository: vaultRepository,
+            values: {
+                global: {
+                    namespace: namespace
+                },
+                server: {
+                    affinity: "",
+                    ha: {
+                        enabled: true,
+                        raft: {
+                            enabled: true,
+                            setNodeId: true,
+                            config: "cluster_name = \"vault-integrated-storage\"\nstorage \"raft\" {\n   path    = \"/vault/data/\"\n}\n\nlistener \"tcp\" {\n   address = \"[::]:8200\"\n   cluster_address = \"[::]:8201\"\n   tls_disable = \"true\"\n}\nservice_registration \"kubernetes\" {}\n"
+                        }
+                    }
+                },
+            },
+        });
+    }
+
+    private VaultInItMethod(props: sunbirdrc2helmStackProps) {
+        const eksCluster = props.eksCluster;
+        const vaultInitRepository = "https://dpgonaws.github.io/dpg-helm";
+        const vaulInitVersion = "0.1.0";
+        const namespace = props.config.NAMESPACE;
+        const release = props.config.RELEASE;
+        const chart = "vault-init";
+        const vaultName = `${release}-vault`;
+
+        //create vault
+        new helm.HelmChart(this, "cdkhelm", {
+            cluster: eksCluster,
+            chart: chart,
+            namespace: namespace,
+            createNamespace: true,
+            release: `${release}-${chart}`,
+            version: vaulInitVersion,
+            wait: true,
+            repository: vaultInitRepository,
+            values: {
+                envVars: {
+                    NAMESPACE: namespace,
+                    VAULT_NAME: vaultName
+                }
+            },
         });
     }
 }

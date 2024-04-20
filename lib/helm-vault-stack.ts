@@ -12,6 +12,10 @@ export interface helmvaultStackProps extends cdk.StackProps {
 export class helmvaultStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: helmvaultStackProps) {
         super(scope, id, props);
+        this.newMethod(props);
+    }
+
+    private newMethod(props: helmvaultStackProps) {
         const eksCluster = props.eksCluster;
         const vaultRepository = "https://helm.releases.hashicorp.com/";
         const vaultVersion = "0.24.0";

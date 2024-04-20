@@ -10,7 +10,7 @@ import { rdsStack } from "../lib/rds-stack";
 import { eksec2Stack } from "../lib/eks-ec2-stack";
 import { helmvaultStack } from "../lib/helm-vault-stack";
 import { EbsCsiRoleStack } from '../lib/EbsCsiRoleStack';
-import { sunbirdrc2helmStack } from "../lib/sunbirdrc2-helm-stack";
+import { sunbirdrc2helmStack } from "../lib/sunbirdrc2helmStack";
 import { helmvaultinitStack } from "../lib/helm-vaultInit-stack.";
 
 
