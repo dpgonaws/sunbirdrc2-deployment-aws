@@ -75,9 +75,6 @@ export class eksec2Stack extends cdk.Stack {
 
         });
 
-        console.log(this.eksCluster.openIdConnectProvider.openIdConnectProviderIssuer);
-        console.log(this.eksCluster.clusterOpenIdConnectIssuer);
-        console.log(this.eksCluster.clusterOpenIdConnectIssuerUrl);
         const key1 = this.eksCluster.openIdConnectProvider.openIdConnectProviderIssuer;
 
         const stringEquals = new cdk.CfnJson(this, 'ConditionJson', {

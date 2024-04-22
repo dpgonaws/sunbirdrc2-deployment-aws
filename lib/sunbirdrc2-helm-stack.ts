@@ -15,6 +15,8 @@ export interface sunbirdrc2helmStackProps extends cdk.StackProps {
     rdsHost: string;
     RDS_PASSWORD: string;
     RDS_USER: string;
+    moduleChoice: string;
+    release: string;
 }
 
 export class sunbirdrc2helmStack extends cdk.Stack {
@@ -24,29 +26,33 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         const registryChartName = "sunbird-r-charts";
         const credentialingChartName = "sunbird-c-charts"
         var rcchatName = "sunbird_rc_charts";
+        var release = props.release;
 
+        const moduleChoice = props.moduleChoice;
         const registryReleaseName = `${release}-r`;
         const credentialingReleaseName = `${release}-c`;
         const rcReleaseName = `${release}`;
 
 
 
-        switch (repository) {
+        switch (moduleChoice) {
             case "RC":
                 rcchatName = "sunbird_rc_charts";
-
-                this.SunBirdRC2DeployMethod(props, rcchatName);
+                this.VaultDeployMethod(props);
+                this.VaultDeployMethod(props);
+                this.SunBirdRC2DeployMethod(props, rcchatName, release);
                 break;
             case "R":
                 rcchatName = "sunbird-r-charts";
+                this.SunBirdRC2DeployMethod(props, rcchatName, release);
                 break;
             case "C":
                 rcchatName = "sunbird-c-charts";
+                this.VaultDeployMethod(props);
+                this.VaultDeployMethod(props);
+                this.SunBirdRC2DeployMethod(props, rcchatName, release);
                 break;
         }
-
-
-        // deploy SUn Bird RC 2.0
 
     }
 

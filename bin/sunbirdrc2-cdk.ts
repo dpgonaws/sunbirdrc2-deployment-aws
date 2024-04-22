@@ -9,8 +9,7 @@ import { vpcStack } from "../lib/vpc-stack";
 import { rdsStack } from "../lib/rds-stack";
 import { eksec2Stack } from "../lib/eks-ec2-stack";
 import { helmvaultStack } from "../lib/helm-vault-stack";
-import { EbsCsiRoleStack } from '../lib/EbsCsiRoleStack';
-import { sunbirdrc2helmStack } from "../lib/sunbirdrc2helmStack";
+import { sunbirdrc2helmStack } from "../lib/sunbirdrc2-helm-stack";
 import { helmvaultinitStack } from "../lib/helm-vaultInit-stack.";
 
 
@@ -57,21 +56,6 @@ const eksCluster = new eksec2Stack(app, "eksstackrc2", {
     vpc: infra.vpc,
 });
 
-
-
-//provison role
-
-const csiRole = new EbsCsiRoleStack(app, "ebscsirolerc2", {
-    env: {
-        region: config.REGION,
-        account: config.ACCOUNT,
-    },
-    config: config,
-    vpc: infra.vpc,
-    eksCluster: eksCluster.eksCluster
-});
-
-
 // Run HELM charts for the Vault applications in the provisioned EKS cluster
 new helmvaultStack(app, "helmstackrc2", {
     env: {
@@ -106,7 +90,9 @@ new sunbirdrc2helmStack(app, "sunbirdrc2helmStackrc2", {
     rdsHost: rds.rdsHost,
     RDS_PASSWORD: config.RDS_PASSWORD,
     RDS_USER: config.RDS_USER,
-    eksCluster: eksCluster.eksCluster
+    eksCluster: eksCluster.eksCluster,
+    moduleChoice: config.SUNBIRD_RC_MODULES_CHOICE,
+    release: config.RELEASE
 
 });
 

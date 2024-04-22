@@ -17,6 +17,7 @@ export type ConfigProps = {
   RDS_SEC_GRP_INGRESS: string;
   ROLE_ARN: string;
   EKS_CLUSTER_NAME: string;
+  SUNBIRD_RC_MODULES_CHOICE: string;
 
 };
 
@@ -34,5 +35,6 @@ export const getConfig = (): ConfigProps => ({
   RDS_PASSWORD: process.env.RDS_PASSWORD || "",
   RDS_SEC_GRP_INGRESS: process.env.CIDR || "",
   ROLE_ARN: process.env.ROLE_ARN || "",
-  EKS_CLUSTER_NAME: process.env.EKS_CLUSTER_NAME || "ekscluster-sbrc2"
+  EKS_CLUSTER_NAME: process.env.EKS_CLUSTER_NAME || "ekscluster-sbrc2",
+  SUNBIRD_RC_MODULES_CHOICE: process.env.SUNBIRD_RC_MODULES_CHOICE || "RC",
 });
