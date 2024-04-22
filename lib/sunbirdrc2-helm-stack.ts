@@ -54,7 +54,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
             case "C":
                 const cVaultReleaseName = `${release}`;
                 const cVaultInItReleaseName = `${release}-c`;
-                const cReleaseName = `${release}-rc`;
+                const cReleaseName = `${release}-c`;
                 const cSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
 
                 rcchatName = "sunbird-c-charts";
@@ -186,6 +186,8 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 },
             }
         });
+
+        DelayNode
     }
     private async VaultDeployMethod(props: sunbirdrc2helmStackProps, releaseName: string): Promise<void> {
 
@@ -222,6 +224,11 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 },
             },
         });
+        await this.delay(60000); // Wait for 60 seconds
+    }
+
+    private async delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     private async VaultInItMethod(props: sunbirdrc2helmStackProps, releaseName: string): Promise<void> {
@@ -250,5 +257,9 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 }
             },
         });
+
+        await this.delay(120000); // Wait for 60 seconds
     }
+
+    
 }
