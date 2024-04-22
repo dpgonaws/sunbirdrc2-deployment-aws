@@ -7,20 +7,17 @@ import { ConfigProps } from "./config";
 export interface helmvaultStackProps extends cdk.StackProps {
     config: ConfigProps;
     eksCluster: eks.Cluster;
+    
 }
 
 export class helmvaultStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: helmvaultStackProps) {
         super(scope, id, props);
-        this.newMethod(props);
-    }
-
-    private newMethod(props: helmvaultStackProps) {
         const eksCluster = props.eksCluster;
         const vaultRepository = "https://helm.releases.hashicorp.com/";
         const vaultVersion = "0.24.0";
         const namespace = props.config.NAMESPACE;
-        const release = props.config.RELEASE;
+        const vaultReleaseName = props.config.VAULT_RELEASE_NAME;
 
         //create vault
         new helm.HelmChart(this, "cdkhelm", {
@@ -28,7 +25,7 @@ export class helmvaultStack extends cdk.Stack {
             chart: "vault",
             namespace: namespace,
             createNamespace: true,
-            release: release,
+            release: vaultReleaseName,
             version: vaultVersion,
             wait: false,
             repository: vaultRepository,
@@ -50,4 +47,5 @@ export class helmvaultStack extends cdk.Stack {
             },
         });
     }
+
 }

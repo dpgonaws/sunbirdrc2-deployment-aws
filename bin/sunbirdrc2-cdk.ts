@@ -53,6 +53,26 @@ const eksCluster = new eksec2Stack(app, "eksstacksbrc2", {
     vpc: infra.vpc,
 });
 
+
+
+
+const moduleChoice = config.SUNBIRD_RC_MODULES_CHOICE;
+
+const credentialingChartName = "sunbird-c-charts"
+var rcchatName = "sunbird_rc_charts";
+var rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
+
+
+switch (moduleChoice) {
+    case "R":
+        rcchatName = "sunbird-r-charts";
+        rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl";
+        break;
+    case "C":
+        rcchatName = "sunbird-c-charts";
+        break;
+}
+
 // Run HELM charts for the Vault applications in the provisioned EKS cluster
 const vaultHHelm = new helmvaultStack(app, "vaulthelmstacksbrc2", {
     env: {
@@ -78,29 +98,6 @@ const vaultInitHelm = new helmvaultinitStack(app, "vaultinithelmstacksbrc2", {
 //add dependency on Vault Helm
 vaultInitHelm.addDependency(vaultHHelm);
 
-
-const moduleChoice = config.SUNBIRD_RC_MODULES_CHOICE;
-
-const credentialingChartName = "sunbird-c-charts"
-var rcchatName = "sunbird_rc_charts";
-var release = config.RELEASE;
-const rcReleaseName = `${release}-rc`;
-const rReleaseName = `${release}-r`;
-const credentialingVaultReleaseName = `${release}`;
-const credentialingVaultInItReleaseName = `${release}-c`;
-var rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
-
-
-switch (moduleChoice) {
-    case "R":
-        rcchatName = "sunbird-r-charts";
-        rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl";
-        break;
-    case "C":
-        rcchatName = "sunbird-c-charts";
-        break;
-}
-
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
 const sunbirdRCHelm = new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     env: {
@@ -115,10 +112,9 @@ const sunbirdRCHelm = new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     RDS_USER: config.RDS_USER,
     eksCluster: eksCluster.eksCluster,
     moduleChoice: config.SUNBIRD_RC_MODULES_CHOICE,
-    release: config.RELEASE,
     chartName: rcchatName,
     signatureProviderName: rcSignatureProviderName,
-    credentialingVaultReleaseName: credentialingVaultReleaseName
+
 });
 
 switch (moduleChoice) {

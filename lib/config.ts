@@ -11,7 +11,11 @@ export type ConfigProps = {
   CHART: string;
   REPOSITORY: string;
   NAMESPACE: string;
-  RELEASE: string;
+  VAULT_RELEASE_NAME: string,
+  VAULTINIT_RELEASE_NAME: string,
+  C_RELEASE_NAME: string,
+  R_RELEASE_NAME: string,
+  RC_RELEASE_NAME: string,
   RDS_USER: string;
   RDS_PASSWORD: string;
   RDS_SEC_GRP_INGRESS: string;
@@ -30,7 +34,11 @@ export const getConfig = (): ConfigProps => ({
   CHART: "sunbird_rc_charts",
   REPOSITORY: "https://dpgonaws.github.io/dpg-helm",
   NAMESPACE: "sbrc2",
-  RELEASE: "sbrc2",
+  VAULT_RELEASE_NAME: "sbrc2",
+  C_RELEASE_NAME: "sbrc2-c",
+  R_RELEASE_NAME: "sbrc2-r",
+  RC_RELEASE_NAME: "sbrc2-rc",
+  VAULTINIT_RELEASE_NAME: "sbrc2-i",
   RDS_USER: process.env.RDS_USER || "postgres",
   RDS_PASSWORD: process.env.RDS_PASSWORD || "",
   RDS_SEC_GRP_INGRESS: process.env.CIDR || "",

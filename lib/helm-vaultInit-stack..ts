@@ -16,9 +16,9 @@ export class helmvaultinitStack extends cdk.Stack {
         const vaultInitRepository = "https://dpgonaws.github.io/dpg-helm";
         const vaulInitVersion = "0.1.0";
         const namespace = props.config.NAMESPACE;
-        const release = props.config.RELEASE;
+        const release = props.config.VAULTINIT_RELEASE_NAME;
         const chart = "vault-init";
-        const vaultName = `${release}-vault`;
+        const vaultName = `${props.config.VAULT_RELEASE_NAME}-vault`;
 
         //create vault
         new helm.HelmChart(this, "cdkhelm", {
@@ -26,7 +26,7 @@ export class helmvaultinitStack extends cdk.Stack {
             chart: chart,
             namespace: namespace,
             createNamespace: true,
-            release: `${release}-${chart}`,
+            release: release,
             version: vaulInitVersion,
             wait: true,
             repository: vaultInitRepository,

@@ -16,25 +16,22 @@ export interface sunbirdrc2helmStackProps extends cdk.StackProps {
     RDS_PASSWORD: string;
     RDS_USER: string;
     moduleChoice: string;
-    release: string;
     chartName: string;
     signatureProviderName: string;
-    credentialingVaultReleaseName: string;
 }
 
 export class sunbirdrc2helmStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: sunbirdrc2helmStackProps) {
         super(scope, id, props);
 
-        var release = props.release;
         const vpc = props.vpc;
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
         const RDS_PASSWORD = props.RDS_PASSWORD;
         const chartNmae = props.chartName;
-        const releaseName = props.release;
         const signatureProviderName = props.signatureProviderName;
-        const credentialingVaultReleaseName = props.credentialingVaultReleaseName;
+        const releaseName = props.config.RC_RELEASE_NAME;
+        const credentialingVaultReleaseName = props.config.VAULT_RELEASE_NAME;
 
         const secretName = sm.Secret.fromSecretAttributes(this, "ImportedSecret", {
             secretCompleteArn: rdssecretARN,
