@@ -39,10 +39,9 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 const credentialingVaultReleaseName = `${release}`;
                 const credentialingVaultInItReleaseName = `${release}-c`;
                 const rcReleaseName = `${release}-rc`;
-
-                this.VaultDeployMethod(props, credentialingVaultReleaseName);
-                this.VaultInItMethod(props, credentialingVaultInItReleaseName);
-                this.SunBirdRC2DeployMethod(props, rcchatName, rcReleaseName, credentialingVaultReleaseName);
+                this.VaultDeployMethod(props, credentialingVaultReleaseName)
+                    .then(() => this.VaultInItMethod(props, credentialingVaultInItReleaseName))
+                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, rcReleaseName, credentialingVaultReleaseName));
                 break;
             case "R":
                 const rReleaseName = `${release}-r`;
@@ -54,15 +53,15 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 const cVaultInItReleaseName = `${release}-c`;
                 const cReleaseName = `${release}-rc`;
                 rcchatName = "sunbird-c-charts";
-                this.VaultDeployMethod(props, cVaultReleaseName);
-                this.VaultInItMethod(props, cVaultInItReleaseName);
-                this.SunBirdRC2DeployMethod(props, rcchatName, cReleaseName, cVaultReleaseName);
+                this.VaultDeployMethod(props, cVaultReleaseName)
+                    .then(() => this.VaultInItMethod(props, cVaultInItReleaseName))
+                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, cReleaseName, cVaultReleaseName));
                 break;
         }
 
     }
 
-    private SunBirdRC2DeployMethod(props: sunbirdrc2helmStackProps, chartName: string, rcReleaseName: string, vaultReleaseName: string) {
+    private async SunBirdRC2DeployMethod(props: sunbirdrc2helmStackProps, chartName: string, rcReleaseName: string, vaultReleaseName: string): Promise<void> {
         const vpc = props.vpc;
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
@@ -183,7 +182,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
             }
         });
     }
-    private VaultDeployMethod(props: sunbirdrc2helmStackProps, releaseName: string) {
+    private async VaultDeployMethod(props: sunbirdrc2helmStackProps, releaseName: string): Promise<void> {
 
         const eksCluster = props.eksCluster;
         const vaultRepository = "https://helm.releases.hashicorp.com/";
@@ -220,7 +219,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
         });
     }
 
-    private VaultInItMethod(props: sunbirdrc2helmStackProps, releaseName: string) {
+    private async VaultInItMethod(props: sunbirdrc2helmStackProps, releaseName: string): Promise<void> {
         const eksCluster = props.eksCluster;
         const vaultInitRepository = "https://dpgonaws.github.io/dpg-helm";
         const vaulInitVersion = "0.1.0";
