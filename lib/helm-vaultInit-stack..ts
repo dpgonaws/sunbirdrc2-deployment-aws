@@ -12,10 +12,6 @@ export interface helmvaultinitStackProps extends cdk.StackProps {
 export class helmvaultinitStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: helmvaultinitStackProps) {
         super(scope, id, props);
-        this.newMethod(props);
-    }
-
-    private newMethod(props: helmvaultinitStackProps) {
         const eksCluster = props.eksCluster;
         const vaultInitRepository = "https://dpgonaws.github.io/dpg-helm";
         const vaulInitVersion = "0.1.0";
@@ -43,3 +39,4 @@ export class helmvaultinitStack extends cdk.Stack {
         });
     }
 }
+

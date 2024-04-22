@@ -28,9 +28,6 @@ const MY_AWS_ENV_STACK_PROPS: AwsEnvStackProps = {
     config: config,
 };
 
-
-
-
 // Provision required VPC network & subnets
 const infra = new vpcStack(app, "vpcstacksbrc2", MY_AWS_ENV_STACK_PROPS);
 
@@ -57,7 +54,7 @@ const eksCluster = new eksec2Stack(app, "eksstacksbrc2", {
 });
 
 // Run HELM charts for the Vault applications in the provisioned EKS cluster
-new helmvaultStack(app, "helmstacksbrc2", {
+const vaultHHelm = new helmvaultStack(app, "vaulthelmstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -68,7 +65,7 @@ new helmvaultStack(app, "helmstacksbrc2", {
 });
 
 // Run HELM charts for the Vault init applications in the provisioned EKS cluster
-new helmvaultinitStack(app, "helmsinitstacksbrc2", {
+const vaultInitHelm = new helmvaultinitStack(app, "vaultinithelmstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -78,8 +75,34 @@ new helmvaultinitStack(app, "helmsinitstacksbrc2", {
 
 });
 
+//add dependency on Vault Helm
+vaultInitHelm.addDependency(vaultHHelm);
+
+
+const moduleChoice = config.SUNBIRD_RC_MODULES_CHOICE;
+
+const credentialingChartName = "sunbird-c-charts"
+var rcchatName = "sunbird_rc_charts";
+var release = config.RELEASE;
+const rcReleaseName = `${release}-rc`;
+const rReleaseName = `${release}-r`;
+const credentialingVaultReleaseName = `${release}`;
+const credentialingVaultInItReleaseName = `${release}-c`;
+var rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
+
+
+switch (moduleChoice) {
+    case "R":
+        rcchatName = "sunbird-r-charts";
+        rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl";
+        break;
+    case "C":
+        rcchatName = "sunbird-c-charts";
+        break;
+}
+
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
-new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
+const sunbirdRCHelm = new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -92,9 +115,23 @@ new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     RDS_USER: config.RDS_USER,
     eksCluster: eksCluster.eksCluster,
     moduleChoice: config.SUNBIRD_RC_MODULES_CHOICE,
-    release: config.RELEASE
-
+    release: config.RELEASE,
+    chartName: rcchatName,
+    signatureProviderName: rcSignatureProviderName,
+    credentialingVaultReleaseName: credentialingVaultReleaseName
 });
+
+switch (moduleChoice) {
+    case "RC":
+        sunbirdRCHelm.addDependency(vaultInitHelm);
+        break;
+    case "C":
+        sunbirdRCHelm.addDependency(vaultInitHelm);
+        break;
+};
+
+
+
 
 
 
