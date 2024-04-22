@@ -1,15 +1,33 @@
-# Welcome to your CDK TypeScript project
+# Sunbird RC 2.0, one-click deployment on AWS
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`Sunbirdrc2CdkStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+### Description
+Sunbird RC is an interoperable and unified registry infrastructure that needs to be established to enable "live," "reusable," and "trustworthy" registries as a "single source of truth" to address the three core issues mentioned. To learn more about Sunbird RC, please visit https://docs.sunbirdrc.dev/.
 
-## Useful commands
+### Packaging overview
+This packaging initiative offers a practical approach to increase the adoption, streamline deployment and management of Sunbird RC 2.0 building blocks on AWS by providing a reference architecture and one-click deployment automation scripts. It allows builders to manage AWS resource provisioning and application deployment in a programmatic and repeatable way.
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+This repository contains the source code and configuration for deploying Sunbird RC 2.0 stack that leverages the power of Amazon Web Services (AWS) **[Cloud Development Kit (CDK)](https://aws.amazon.com/cdk)** for infrastructure provisioning and **[Helm](https://helm.sh)** for deploying services within an Amazon Elastic Kubernetes Service (EKS) cluster.  
+
+### Sunbird RC 2.0 Deployment
+The Sunbird RC 2.0 one-click deployment packaging offers two mode of deployments on the AWS cloud, catering to different deployment scenarios.
+
+#### Mode One: AWS CDK + Helm
+This mode offers a comprehensive solution for users who prefer a one-click deployment approach to provisioning AWS infrastructure and deploying the Sunbird RC 2.0 application stack.
+
+* [AWS CDK One Click Deployment](documentation/01-Deployment-CDK-Spar.md)
+
+#### Mode Two: Direct Helm Chart Invocation
+An alternative deployment approach accommodates users with existing essential AWS infrastructure components like Amazon RDS Postgres and an Amazon EKS cluster. This mode enables the direct installation of the Sunbird RC 2.0 Helm chart without relying on AWS CDK scripts. Alternatively, you can combine both methods, utilizing CDK for provisioning specific services like the EKS cluster.
+
+* [Helm Chart Deployment](documentation/02-Deployment-Helm-Spar.md)
+
+### Sunbird RC 2.0 reference architecture
+Required AWS services to operate the core Sunbird RC registry services:
+* Amazon VPC
+* Amazon RDS for PostgreSQL Serverless V2
+* Amazon Elastic Kubernetes Service (Amazon EKS)
+* AWS Fargate
+* Elastic Load Balancing (ELB)
+
+![Architecture](documentation/imgs/Sunbird RC 2.0-AWS-Reference-Architecture_latest.png)
