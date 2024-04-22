@@ -39,29 +39,34 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                 const credentialingVaultReleaseName = `${release}`;
                 const credentialingVaultInItReleaseName = `${release}-c`;
                 const rcReleaseName = `${release}-rc`;
+                const rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
                 this.VaultDeployMethod(props, credentialingVaultReleaseName)
                     .then(() => this.VaultInItMethod(props, credentialingVaultInItReleaseName))
-                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, rcReleaseName, credentialingVaultReleaseName));
+                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, rcReleaseName, credentialingVaultReleaseName, rcSignatureProviderName));
                 break;
             case "R":
                 const rReleaseName = `${release}-r`;
                 rcchatName = "sunbird-r-charts";
-                this.SunBirdRC2DeployMethod(props, rcchatName, rReleaseName, "");
+                const rSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl";
+
+                this.SunBirdRC2DeployMethod(props, rcchatName, rReleaseName, "", rSignatureProviderName);
                 break;
             case "C":
                 const cVaultReleaseName = `${release}`;
                 const cVaultInItReleaseName = `${release}-c`;
                 const cReleaseName = `${release}-rc`;
+                const cSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
+
                 rcchatName = "sunbird-c-charts";
                 this.VaultDeployMethod(props, cVaultReleaseName)
                     .then(() => this.VaultInItMethod(props, cVaultInItReleaseName))
-                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, cReleaseName, cVaultReleaseName));
+                    .then(() => this.SunBirdRC2DeployMethod(props, rcchatName, cReleaseName, cVaultReleaseName, cSignatureProviderName));
                 break;
         }
 
     }
 
-    private async SunBirdRC2DeployMethod(props: sunbirdrc2helmStackProps, chartName: string, rcReleaseName: string, vaultReleaseName: string): Promise<void> {
+    private async SunBirdRC2DeployMethod(props: sunbirdrc2helmStackProps, chartName: string, rcReleaseName: string, vaultReleaseName: string, signatureProviderName: string): Promise<void> {
         const vpc = props.vpc;
         const eksCluster = props.eksCluster;
         const rdssecretARN = props.rdssecret;
@@ -110,7 +115,7 @@ export class sunbirdrc2helmStack extends cdk.Stack {
                     {
                         database: dbName,
                         search_provider: "dev.sunbirdrc.registry.service.NativeSearchService",
-                        signature_provider: "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl",
+                        signature_provider: signatureProviderName,
                         sso:
                         {
                             realm: "sunbird-rc",
