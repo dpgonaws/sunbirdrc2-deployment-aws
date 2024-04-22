@@ -32,10 +32,10 @@ const MY_AWS_ENV_STACK_PROPS: AwsEnvStackProps = {
 
 
 // Provision required VPC network & subnets
-const infra = new vpcStack(app, "vpcstackrc2", MY_AWS_ENV_STACK_PROPS);
+const infra = new vpcStack(app, "vpcstacksbrc2", MY_AWS_ENV_STACK_PROPS);
 
 // Provision target RDS data store
-const rds = new rdsStack(app, "rdsstackrc2", {
+const rds = new rdsStack(app, "rdsstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -47,7 +47,7 @@ const rds = new rdsStack(app, "rdsstackrc2", {
 });
 
 // Provision target EKS with Fargate Cluster within the VPC
-const eksCluster = new eksec2Stack(app, "eksstackrc2", {
+const eksCluster = new eksec2Stack(app, "eksstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -57,7 +57,7 @@ const eksCluster = new eksec2Stack(app, "eksstackrc2", {
 });
 
 // Run HELM charts for the Vault applications in the provisioned EKS cluster
-new helmvaultStack(app, "helmstackrc2", {
+new helmvaultStack(app, "helmstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -68,7 +68,7 @@ new helmvaultStack(app, "helmstackrc2", {
 });
 
 // Run HELM charts for the Vault init applications in the provisioned EKS cluster
-new helmvaultinitStack(app, "helmsinitstackrc2", {
+new helmvaultinitStack(app, "helmsinitstacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
@@ -79,7 +79,7 @@ new helmvaultinitStack(app, "helmsinitstackrc2", {
 });
 
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
-new sunbirdrc2helmStack(app, "sunbirdrc2helmStackrc2", {
+new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     env: {
         region: config.REGION,
         account: config.ACCOUNT,
