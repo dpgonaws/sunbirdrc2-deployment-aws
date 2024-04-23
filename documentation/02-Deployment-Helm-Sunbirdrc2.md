@@ -28,9 +28,7 @@ helm repo list
 ```
 helm search repo sunbird-rc
 ```
-```
-helm search repo sunbird-rc
-```
+
 ```
 NAME                                CHART VERSION   APP VERSION  DESCRIPTION
 testone/spar-helm-chart             0.1.0           1.0.0        A Helm chart for spar application
