@@ -30,15 +30,14 @@ helm search repo sunbird-rc
 ```
 ```
 helm search repo sunbird-rc
-
-NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
-testone/spar-helm-chart                         0.1.0           1.0.0           A Helm chart for spar application
-sunbird-rc/sunbird-c-charts                         0.0.1           0.0.13          A Helm chart for Sunbird RC
-sunbird-rc/sunbird-r-charts                         0.0.1           0.0.13          A Helm chart for Sunbird RC
-sunbird-rc/sunbird_rc_charts                        0.0.1           0.0.13          A Helm chart for Sunbird RC
-sunbird-rc/vault-init                               0.1.0           1.16.0          A Helm chart for Kubernetes
-spar-helm/social-payments-account-registry      0.1.0           0.1.0           A Helm chart for Social Payments Account Registry
-
+```
+```
+NAME                                CHART VERSION   APP VERSION  DESCRIPTION
+testone/spar-helm-chart             0.1.0           1.0.0        A Helm chart for spar application
+sunbird-rc/sunbird-c-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc/sunbird-r-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc/sunbird_rc_charts        0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc/vault-init               0.1.0           1.16.0       A Helm chart for Kubernetes
 ```
 
 #### 4. Helm Chart Sunbird RC Framework Deployment Required following User Inputs:
@@ -68,7 +67,7 @@ helm upgrade --install <release_name> sunbird-r-charts/ -n <namespace> --create-
 Replace `<release_name>` with a name for your release.
 
 #### 6. Monitor the deployment status using the following command:
-```bash
+```
 watch -n .5 kubectl get pods -n <namespace>
 ```
 
@@ -122,7 +121,7 @@ helm status <vault_release_name>  -n <namespace>
 ```
 
 Wait until all vault pods are in Running state.
-<screenshot to be added>
+screenshot to be added
 
 #### 2. Initialize vault using vault-init chart
 
@@ -137,7 +136,7 @@ helm upgrade --install <vault_init_release_name> vault-init/ -n <namespace> \
 ```
 
 Ensure all vault pods are in Ready state
-<screenshot to be added>
+screenshot to be added
 
 
 #### 3. Helm global deployment properites:  
@@ -173,15 +172,14 @@ helm upgrade --install <release_name> sunbird-c-charts/ -n <namespace> --create-
 
 ```
 watch -n .5 kubectl get pods -n <namespace>
-
 ```
 
 ## Deploying Sunbird RC - REGISTRY_AND_CREDENTIALLING
 
 
-[Install vault from hashicorp](#1-install-vault-from-hashicorp)  using new namespace
+Execute [Install vault from hashicorp](#1-install-vault-from-hashicorp)  using new namespace
 
-[Initialize the vault using vault-init](#2-initialize-vault-using-vault-init-chart) 
+Execute [Initialize the vault using vault-init](#2-initialize-vault-using-vault-init-chart) 
 
 ```
 helm pull sunbird-rc/sunbird_rc_charts --untar --destination . 
@@ -199,5 +197,10 @@ helm upgrade --install <release_name> sunbird_rc_charts/ -n <namespace> --create
  --set global.vault.address="XXXXYY" \
  --set global.vault.base_url="XXXXYY" \
  --set global.vault.root_path="XXXXYY" \
+```
+
 
 ```
+watch -n .5 kubectl get pods -n <namespace>
+```
+
