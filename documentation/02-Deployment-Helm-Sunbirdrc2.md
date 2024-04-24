@@ -118,8 +118,8 @@ helm install <vault_release_name> hashicorp/vault \
 helm status <vault_release_name>  -n <namespace>
 ```
 
-Wait until all vault pods are in Running state.
-screenshot to be added
+Wait until all vault pods are in Running state. Vault pods will not be in ready state until initialized and unsealed.
+![VaultNotReady](imgs/vault-pods-not-ready-state.png)
 
 #### 2. Initialize vault using vault-init chart
 
@@ -133,8 +133,8 @@ helm upgrade --install <vault_init_release_name> vault-init/ -n <namespace> \
 --set envVars.VAULT_NAME="<vault_release_name>"
 ```
 
-Ensure all vault pods are in Ready state
-screenshot to be added
+Ensure all vault pods are in Ready state. Init will takes 1-2 minutes to  make vault pods are in ready state
+![VaultReady](imgs/vault-pods-ready-state.png)
 
 
 #### 3. Helm global deployment properites:  
@@ -171,6 +171,7 @@ helm upgrade --install <release_name> sunbird-c-charts/ -n <namespace> --create-
 ```
 watch -n .5 kubectl get pods -n <namespace>
 ```
+![CPodStatus](imgs/sunbird-c-pod-status.png)
 
 ## Deploying Sunbird RC - REGISTRY_AND_CREDENTIALLING
 
@@ -201,4 +202,6 @@ helm upgrade --install <release_name> sunbird_rc_charts/ -n <namespace> --create
 ```
 watch -n .5 kubectl get pods -n <namespace>
 ```
+
+![RCPodStatus](imgs/sunbird-rc-pod-status.png)
 
