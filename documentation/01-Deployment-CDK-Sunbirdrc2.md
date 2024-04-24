@@ -33,7 +33,7 @@ npm i -g aws-cdk
 
 # Clone the repository 
 git clone <repo_url>
-cd sunbird-rc-aws-automation
+cd sunbird-rc2-aws-automation
 
 # Install the CDK application
 npm i
