@@ -11,16 +11,17 @@ To get started with CDK, it's easier to set up an AWS Cloud9 environment, which 
 ### AWS CDK Stack Overview
 The CDK comprises stacks designed to perform unique provisioning steps, making the overall automation modular. Here is an overview of all the stacks along with the actions they perform:
 
-    bin/sunbird-cdk.ts - Is the entrypoint of the CDK application.
+    bin/sunbirdrc2-cdk.ts - Is the entrypoint of the CDK application.
     config.ts  -  Input file for CDK Deployment including defaults ( AWS Account Number, Region, Bucket Name etc., )
     vpc-stack.ts  -  Foundation stack creation including VPC, Subnets, Route tables, NatGW etc.,
     rds-stack.ts  - Creates RDS Aurora Postgresql cluster
-    eks-stack.ts  - To create EKS Fargate Cluster
-    s3-stack.ts  - Creates S3 bucket (bucket name will be taken from env file)
-    helm-stack.ts - To deploy Sunbird RC helm chart
+    eks-ec2-stack.ts  - To create EKS EC2 Cluster    
+    sunbirdrc2-helm-stack.ts - To deploy Sunbird RC helm chart
+    helm-vault-stack.ts - To deploy Vault from Hashicorp
+    helm-vaultInit-stack..ts - To initialize and unseal the deployed Vault
 
 ### CDK Stack list
-    vpcStack, rdsStack, eksStack, s3Stack, helmStack
+    vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2, vaulthelmstacksbrc2, vaultinithelmstacksbrc2, sunbirdrc2helmStacksbrc2
 
 ### Prepare your environment
 ```
@@ -43,17 +44,18 @@ cdk bootstrap aws://ACCOUNT-NUMBER-1/REGION-1
 
 #### Update mandatory environment variables, with your preferred editor open '.env' file
 
-   | Secret Key                                     | Description   | 
-   | ---------------------------------------------  | ------- | 
-   | REGION                            | XXXXYY  | 
-   | ACCOUNT                     | XXXXYY  | 
-   | CIDR                      | VPC CIDR, change it as per your environment  | 
-   | MAX_AZS                | AWS Availability Zone count, default 2  |
-   | BUCKET_NAME                | S3 bucket name for storing registory contents  |
-   | RDS_USER                | Database user name for core registory service, default 'postgres'  |
-   | RDS_PASSWORD                | Database password, used while DB creation and passed down to Sunbrd RC services helm chart  |
-   | KEYCLOAK_ADMIN_PASSWORD                | Keycloak admin password, used during initial UI login  |
-   | KEYCLOAK_DEFAULT_USER_PASSWORD                | Keycloak default password to UI login  |
+   | Secret Key                | Description                                 | 
+   | ------------------------- | ------------------------------------------- | 
+   | REGION                    | XXXXYY                                      | 
+   | ACCOUNT                   | XXXXYY                                      | 
+   | CIDR                      | VPC CIDR, change it as per your environment | 
+   | MAX_AZS                   | AWS Availability Zone count, default 2      |
+   | BUCKET_NAME               | S3 bucket name for storing registory contents  |
+   | RDS_USER                  | Database user name for core registory service, default 'postgres'  |
+   | RDS_PASSWORD              | Database password, used while DB creation and passed down to Sunbrd RC services helm chart  |
+   | EKS_CLUSTER_NAME          | AWS EKS Cluster name                        |
+   | ROLE_ARN                  | Amazon EKS mastersRole, to be associated with the system:masters RBAC group, giving super-user access to the cluster  |
+   | SUNBIRD_RC_MODULES_CHOICE | Modules to be insalled as part of this deployment. Values may be 'R' - Registry, 'C' - Credentialling, 'RC' - registryAndCredentialling. Default value is 'RC' |
 
 **Deploy CDK**
 ```
@@ -65,14 +67,16 @@ cdk synth
 # List CDK stack
 cdk list
 
-# Deploy single stack. Ensure order is maintained - vpcStack, rdsStack, eksStack, s3Stack, helmStack
+# Deploy single stack. Ensure order is maintained - vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2,sunbirdrc2helmStacksbrc2
+
+
 cdk deploy <stack_name>
 
 # Alternatively you could also deploy all stacks and CDK would handle the sequence
 cdk deploy --all 
 ```
 
-After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'helmStack' installs the Sunbird RC helm chart and all associated services in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbird.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
+After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'sunbirdrc2helmStacksbrc2' installs the Sunbird RC helm chart and all associated services in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbird.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
 
 Follow the post installation steps to start using Sunbird RC services
 
