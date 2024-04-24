@@ -16,7 +16,7 @@ Before deploying this Helm chart, ensure you have the following prerequisites in
 #### 1. Intialized Sunbird RC Helm Repository
 
 ```
-helm repo add sunbird-rc  https://dpgonaws.github.io/dpg-helm
+helm repo add sunbird-rc2  https://dpgonaws.github.io/dpg-helm
 ```
 
 #### 2. Check the Helm Repo Status:
@@ -26,16 +26,15 @@ helm repo list
 
 #### 3. Serach for Sunbrird RC Chat in Helm Repo:
 ```
-helm search repo sunbird-rc
+helm search repo sunbird-rc2
 ```
 
 ```
 NAME                                CHART VERSION   APP VERSION  DESCRIPTION
-testone/spar-helm-chart             0.1.0           1.0.0        A Helm chart for spar application
-sunbird-rc/sunbird-c-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
-sunbird-rc/sunbird-r-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
-sunbird-rc/sunbird_rc_charts        0.0.1           0.0.13       A Helm chart for Sunbird RC
-sunbird-rc/vault-init               0.1.0           1.16.0       A Helm chart for Kubernetes
+sunbird-rc2/sunbird-c-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc2/sunbird-r-charts         0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc2/sunbird_rc_charts        0.0.1           0.0.13       A Helm chart for Sunbird RC
+sunbird-rc2/vault-init               0.1.0           1.16.0       A Helm chart for Kubernetes
 ```
 
 #### 4. Helm Chart Sunbird RC Framework Deployment Required following User Inputs:
@@ -68,6 +67,7 @@ Replace `<release_name>` with a name for your release.
 ```
 watch -n .5 kubectl get pods -n <namespace>
 ```
+![RPodStatus](imgs/sunbird-r-pod-status.png)
 
 #### 7. After deployment, access the services and components as required.
 ```bash
@@ -124,7 +124,7 @@ screenshot to be added
 #### 2. Initialize vault using vault-init chart
 
 ```
-helm pull sunbird-rc/vault-init --untar --destination .
+helm pull sunbird-rc2/vault-init --untar --destination .
 ```
 
 ```
@@ -180,7 +180,7 @@ Execute [Install vault from hashicorp](#1-install-vault-from-hashicorp)  using n
 Execute [Initialize the vault using vault-init](#2-initialize-vault-using-vault-init-chart) 
 
 ```
-helm pull sunbird-rc/sunbird_rc_charts --untar --destination . 
+helm pull sunbird-rc2/sunbird_rc_charts --untar --destination . 
 ```
 
 
