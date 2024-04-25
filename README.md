@@ -29,4 +29,4 @@ Required AWS services to operate the core Sunbird RC 2.0 registry services:
 * Amazon Elastic Kubernetes Service (Amazon EKS)
 * Elastic Load Balancing (ELB)
 
-![Architecture](documentation/imgs/SunbirdRC2.0-Architecture-Diagram.png)
+![Architecture](documentation/imgs/Sunbird-RC-2-AWS-Reference-Architecture.png)
