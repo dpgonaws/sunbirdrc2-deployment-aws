@@ -40,17 +40,17 @@ cdk bootstrap aws://ACCOUNT-NUMBER-1/REGION-1
 
 #### Update mandatory environment variables, with your preferred editor open '.env' file
 
-   | Secret Key                | Description                                 | 
-   | ------------------------- | ------------------------------------------- | 
-   | REGION                    | XXXXYY                                      | 
-   | ACCOUNT                   | XXXXYY                                      | 
-   | CIDR                      | VPC CIDR, change it as per your environment | 
-   | MAX_AZS                   | AWS Availability Zone count, default 2      |
-   | RDS_USER                  | Database user name for core registory service, default 'postgres'  |
-   | RDS_PASSWORD              | Database password, used while DB creation and passed down to Sunbrd RC services helm chart  |
-   | EKS_CLUSTER_NAME          | AWS EKS Cluster name                        |
-   | ROLE_ARN                  | Amazon EKS mastersRole, to be associated with the system:masters RBAC group, giving super-user access to the cluster  |
-   | SUNBIRD_RC_MODULES_CHOICE | Modules to be insalled as part of this deployment. Values may be  'R -     Registry,  'C' - Credentialling, 'RC' - registryAndCredentialling. Default value is RC'    |
+   | ENVIRONMENT   VARIABLES   | EXAMPLE VALUE                                                                         | DESCRIPTION                                                                                                                                                            |
+|---------------------------|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| REGION                    | us-east-1                                                                             | AWS region                                                                                                                                                             |
+| ACCOUNT                   | 1.23457E+11                                                                           | AWS 12 digit account number                                                                                                                                            |
+| CIDR                      | 10.20.0.0/16                                                                          | VPC CIDR, change it as per your   environment                                                                                                                          |
+| MAX_AZS                   | 2                                                                                     | AWS Availability Zone count,   default 2                                                                                                                               |
+| RDS_USER                  | postgres                                                                              | Database user name for core   registory service, default 'postgres'                                                                                                    |
+| RDS_PASSWORD              | NLhL*I-e54e                                                                           | Database password, used while DB   creation and passed down to Sunbrd RC services helm chart                                                                           |
+| EKS_CLUSTER_NAME          | ekscluster-sbrc2                                                                      | AWS EKS Cluster name                                                                                                                                                   |
+| ROLE_ARN                  | arn:aws:iam::123456789012:role/AWSReservedSSO_AWSAdministratorAccess_2961c11892dc6700 | Amazon EKS mastersRole, to be   associated with the system:masters RBAC group, giving super-user access to   the cluster                                               |
+| SUNBIRD_RC_MODULES_CHOICE | RC                                                                                    | Modules to be insalled as part   of this deployment. Values may be  **'R'** -     Registry,  **'C'** - Credentialling, **'RC'** - registryAndCredentialling. Default value is 'RC'  |
 
 **Deploy CDK**
 ```
@@ -71,7 +71,7 @@ cdk deploy <stack_name>
 cdk deploy --all 
 ```
 
-After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'sunbirdrc2helmStacksbrc2' installs the Sunbird RC helm chart and all associated services in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbirdrc2.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
+After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'sunbirdrc2helmStacksbrc2' installs the Sunbird RC 2.0 helm chart and all associated services in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbirdrc2.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
 
 Follow the post installation steps to start using Sunbird RC2.0 services
 
