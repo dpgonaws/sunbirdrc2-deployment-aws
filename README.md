@@ -2,7 +2,7 @@
 
 
 ### Description
-Sunbird RC 2.0 is an interoperable and unified registry infrastructure that needs to be established to enable "live," "reusable," and "trustworthy" registries as a "single source of truth" to address the three core issues mentioned. To learn more about Sunbird RC, please visit **[SunbirdRC 2.0](https://docs.sunbirdrc.dev/)**.
+Sunbird RC 2.0 is an interoperable and unified registry infrastructure that needs to be established to enable "live," "reusable," and "trustworthy" registries as a "single source of truth" to address the three core issues mentioned. To learn more about Sunbird RC, please visit [SunbirdRC 2.0](https://docs.sunbirdrc.dev/)**.
 
 ### Packaging overview
 This packaging initiative offers a practical approach to increase the adoption, streamline deployment and management of Sunbird RC 2.0 building blocks on AWS by providing a reference architecture and one-click deployment automation scripts. It allows builders to manage AWS resource provisioning and application deployment in a programmatic and repeatable way.
