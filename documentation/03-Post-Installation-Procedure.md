@@ -10,16 +10,15 @@ Ensure all pods are running except registry pod and check the service status in 
 
 ```bash
 kubectl get pods -n <namespace>
-![PodStatus](imgs/post/get_pods.PNG)
+![GetPodStatus](imgs/post/get_pods.png)
 
 kubectl get deployments -n <namespace>
-![DeploymentStatus](imgs/post/get_deployments.PNG)
+![GetDeploymentStatus](imgs/post/get_deployments.png)
 # Copy load-balancer endpoint from admin UI and Keycloak services
 kubectl get svc -n <namespace>
-![SVCStatus](imgs/post/get_svc.PNG)
+![GetSVCStatus](imgs/post/get_svc.png)
 ```
 
-All pods should be in a running state, and services should be available. Copy the AWS Load-balancer endpoint for admin UI and Keycload service.
 
 ### 2. Configure Keycloak service
 
@@ -33,7 +32,6 @@ The keycloak service will be available in  https://<SUNBIRD_RC2_HOSTNAME>/auth. 
 Once you've these steps, your Keycloak instance is configured as required. Ensure that the URLs and settings match your specific deployment and use case. Enjoy using Keycloak for your project and begin using Sunbird RC 2.0 Swagger UI.
 
 - Keycloak portal will be accessible at https://<SUNBIRD_RC2_HOSTNAME>/auth
-
 ![KeycloakUI](imgs/keycloak-ui.png)
 
 - Sunbird RC 2. 0 registry api portal will be accessible at https://<SUNBIRD_RC2_HOSTNAME>/swagger-ui.html

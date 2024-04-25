@@ -62,7 +62,7 @@ cdk synth
 # List CDK stack
 cdk list
 
-# Deploy single stack. Ensure order is maintained - vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2,sunbirdrc2helmStacksbrc2
+# Deploy single stack  - vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2,sunbirdrc2helmStacksbrc2
 
 
 cdk deploy <stack_name>
