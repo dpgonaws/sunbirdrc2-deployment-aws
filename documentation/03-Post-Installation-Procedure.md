@@ -10,14 +10,17 @@ Ensure all pods are running except registry pod and check the service status in 
 
 ```bash
 kubectl get pods -n <namespace>
+```
 ![GetPodStatus](imgs/post/get_pods.png)
 
-kubectl get deployments -n <namespace>
-![GetDeploymentStatus](imgs/post/get_deployments.png)
-# Copy load-balancer endpoint from admin UI and Keycloak services
-kubectl get svc -n <namespace>
-![GetSVCStatus](imgs/post/get_svc.png)
 ```
+kubectl get deployments -n <namespace>
+```
+![GetDeploymentStatus](imgs/post/get_deployments.png)
+```
+kubectl get svc -n <namespace>
+```
+![GetSVCStatus](imgs/post/get_svc.png)
 
 
 ### 2. Configure Keycloak service
