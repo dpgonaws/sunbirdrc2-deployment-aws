@@ -51,10 +51,10 @@ cdk bootstrap aws://ACCOUNT-NUMBER-1/REGION-1
    | EKS_CLUSTER_NAME          | AWS EKS Cluster name                        |
    | ROLE_ARN                  | Amazon EKS mastersRole, to be associated with the system:masters RBAC group, giving super-user access to the cluster  |
    | SUNBIRD_RC_MODULES_CHOICE | Modules to be insalled as part of this deployment.    Values may be 
-   'R' - Registry, 
-   'C' - Credentialling, 
-   'RC' - registryAndCredentialling.
-    Default value is 'RC' |
+                                'R' - Registry, 
+                                 'C' - Credentialling, 
+                                 'RC' - registryAndCredentialling.
+                                     Default value is 'RC'                                                   |
 
 **Deploy CDK**
 ```
