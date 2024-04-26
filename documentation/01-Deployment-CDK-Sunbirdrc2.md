@@ -1,22 +1,21 @@
 ## AWS CDK One Click Deployment ##
 
 ## Prerequisties:
-To get started with CDK, it's easier to set up an AWS Cloud9 environment, which provides you with a code editor and a terminal that runs in a web browser. Configure AWS CLI in your local environment or on a remote server of your choice.
-
-### CDK Stack list
-    vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2, vaulthelmstacksbrc2, vaultinithelmstacksbrc2, sunbirdrc2helmStacksbrc2
+Configuring AWS CLI is a crucial step in working with AWS CDK. You can do it in your local environment.If you prefer to configure AWS CLI on a remote server, you can SSH-ing into the server and running aws configure to set up the CLI credentials and configuration. Just ensure that the server has network connectivity to AWS services and that you have the necessary permissions to configure AWS CLI and access AWS resources from that server.
 
 ### AWS CDK Stack Overview
 The CDK comprises stacks designed to perform unique provisioning steps, making the overall automation modular. Here is an overview of all the stacks along with the actions they perform:
 
-    bin/sunbirdrc2-cdk.ts - Is the entrypoint of the CDK application.
-    config.ts  -  Input file for CDK Deployment including defaults ( AWS Account Number, Region, Bucket Name etc., )
-    vpc-stack.ts  -  Foundation stack creation including VPC, Subnets, Route tables, NatGW etc.,
-    rds-stack.ts  - Creates RDS Aurora Postgresql cluster
-    eks-ec2-stack.ts  - To create EKS EC2 Cluster    
-    sunbirdrc2-helm-stack.ts - To deploy Sunbird RC helm chart
-    helm-vault-stack.ts - To deploy Vault from Hashicorp
-    helm-vaultInit-stack..ts - To initialize and unseal the deployed Vault
+| CDK Stack name           | File name/path           | Description                                                                                       |
+|--------------------------|--------------------------|---------------------------------------------------------------------------------------------------|
+| -                        | bin/sunbirdrc2-cdk.ts    | Is the entrypoint of the CDK application                                                          |
+| -                        | config.ts                | Input file for CDK Deployment including defaults ( AWS Account Number,   Region, Bucket Name etc) |
+| vpcstacksbrc2            | vpc-stack.ts             | Foundation stack creation including VPC, Subnets, Route tables, NatGW etc                         |
+| rdsstacksbrc2            | rds-stack.ts             | Creates RDS Aurora Postgresql cluster                                                             |
+| eksstacksbrc2            | eks-ec2-stack.ts         | To create EKS EC2 Cluster                                                                         |
+| sunbirdrc2helmStacksbrc2 | sunbirdrc2-helm-stack.ts | To deploy Sunbird RC helm chart                                                                   |
+| vaulthelmstacksbrc2      | helm-vault-stack.ts      | To deploy Vault from Hashicorp                                                                    |
+| vaultinithelmstacksbrc2  | helm-vaultInit-stack     | To initialize and unseal the deployed Vault                                                       |
 
 
 ### Prepare your environment
@@ -71,12 +70,23 @@ cdk deploy <stack_name>
 cdk deploy --all 
 ```
 
-After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'sunbirdrc2helmStacksbrc2' installs the Sunbird RC 2.0 helm chart and all associated services in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbirdrc2.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
+After installing all the CDK stacks, verify the AWS services in the AWS web console. The stack 'sunbirdrc2helmStacksbrc2' installs the Sunbird RC 2.0 helm chart, vault helm chart and vault init helm chart to initialize and unseal the vault in the EKS cluster. It is recommended to review the [Deployment through Helm](02-Deployment-Helm-Sunbirdrc2.md) guide to become familiar with Helm charts, services, and parameters. This will be beneficial if you opt to run the Helm chart separately from the CDK, following the "Mode Two: Direct Helm Chart Invocation" approach for installing the Sunbird RC stack.
 
 Follow the post installation steps to start using Sunbird RC2.0 services
 
 * [Post Installation Procedure](03-Post-Installation-Procedure.md)
 
+* NOTE:
+In case vault might get sealed, you can unseal it using the *unseal* token which is avaialble in kubernetes secrets.
+
+```
+kubectl get secrets vault-unseal-key -n <namespace>
+```
+Unseal the vault pods using below command.
+
+```
+kubectl exec <vault_pod_name> -n <namespace> -- vault operator unseal <vault_unseal_key>
+```
 **Lastly, if you wish to clean up, run 'AWS CDK destroy' to remove all AWS resources that were created by it.**
 ```
 cdk destroy [STACKS..]

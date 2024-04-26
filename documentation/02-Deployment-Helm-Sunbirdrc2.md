@@ -7,9 +7,10 @@ This Helm chart provides a convenient way to deploy the Sunbird RC services, whi
 Before deploying this Helm chart, ensure you have the following prerequisites in place:
 
 1. [Git](https://git-scm.com/)
-2. [Helm](https://helm.sh/) (installed on your local machine)
-3. [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (installed on your local machine)
-4. Access to a Kubernetes cluster
+2. [PostgreSQL](https://www.postgresql.org/)
+3. [Helm](https://helm.sh/) (installed on your local machine)
+4. [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (installed on your local machine)
+5. Access to a Kubernetes cluster
 
 ## Deploying Sunbird RC – REGISTRY
 
