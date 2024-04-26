@@ -77,7 +77,7 @@ Follow the post installation steps to start using Sunbird RC2.0 services
 * [Post Installation Procedure](03-Post-Installation-Procedure.md)
 
 * NOTE:
-In case vault might get sealed, you can unseal it using the *unseal* token which is avaialble in kubernetes secrets.
+If Vault becomes sealed, you have the option to unseal it using the unseal token stored in Kubernetes secrets.
 
 ```
 kubectl get secrets vault-unseal-key -n <namespace>
