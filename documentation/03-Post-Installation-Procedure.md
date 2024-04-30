@@ -31,6 +31,20 @@ The keycloak service will be available in  https://<SUNBIRD_RC2_HOSTNAME>/auth. 
 
 2. [Configure keycloak secret](https://github.com/Sunbird-RC/devops/tree/main/deploy-as-code/helm/v2/registryAndCredentialling#configure-keycloak-secret)
 
+### 3. Configure Domain for Sunbird RC hostname
+
+You can use any domain services to get the host name for Sunbird RC. Here, we are going to see the how hostname is configured using Amazon Route53.
+
+1. Get loadbalancer name from the deployed service by executing the below command. Copy the ALB DNS name from the results.
+
+```
+kubectl get ingress -n <namespace>
+```
+
+2. Go to Amazon Route53. Ensure, domain is already procured and hosted zone is created in Route53. Edit the **A** record by configuring the ALB DNS name.
+
+![Route53](imgs/route53_masked.png)
+
 ### Configuration Complete
 Once you've these steps, your Keycloak instance is configured as required. Ensure that the URLs and settings match your specific deployment and use case. Enjoy using Keycloak for your project and begin using Sunbird RC 2.0 Swagger UI.
 

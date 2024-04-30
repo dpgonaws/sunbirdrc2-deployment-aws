@@ -7,12 +7,14 @@ This Helm chart provides a convenient way to deploy the Sunbird RC services, whi
 Before deploying this Helm chart, ensure you have the following prerequisites in place:
 
 1. [Git](https://git-scm.com/)
-2. [PostgreSQL](https://www.postgresql.org/)
+2. [PostgreSQL](https://www.postgresql.org/) (installed on your local machine or remote server with access to local machine)
 3. [Helm](https://helm.sh/) (installed on your local machine)
 4. [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (installed on your local machine)
 5. Access to a Kubernetes cluster
 
 ## Deploying Sunbird RC – REGISTRY
+
+Sunbird RC - REGISTRY deploys only registry microservices.
 
 #### 1. Intialized Sunbird RC Helm Repository
 
@@ -79,6 +81,7 @@ helm list
 ```
 
 ## Deploying Sunbird RC - CREDENTIALLING
+Sunbird RC - CREDENTIALLING deploys only credentialling microservices.
 
 #### 1. Install vault from hashicorp
 
@@ -119,7 +122,7 @@ helm install <vault_release_name> hashicorp/vault \
 helm status <vault_release_name>  -n <namespace>
 ```
 
-Wait until all vault pods are in Running state. Vault pods will not be in ready state until initialized and unsealed.
+Wait until all vault pods are in Running state. Vault pods will not be in ready state until it is initialized and unsealed.
 ![VaultNotReady](imgs/vault-pods-not-ready-state.png)
 
 #### 2. Initialize vault using vault-init chart
@@ -145,7 +148,7 @@ Ensure all vault pods are in Ready state. Init will takes 1-2 minutes to  make v
    | global.database.host                            | XXXXYY  | RDS/Data Host Address               |
    | global.database.user                            | XXXXYY  | RDS/Data Username                   |
    | global.registry.database                        | XXXXYY  | RDS/Data Database                   |
-   | global.registry.signature_provider              | XXXXYY  | dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl                   |   
+   | global.registry.signature_provider              | XXXXYY  | when the module choice is **R** the value is dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl and when the module choice is **C** or **RC**, then the value is  dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl            |   
    | global.secrets.DB_PASSWORD                     | XXXXYY  | Database Password in baseencoded64 format                 |  
    | global.secrets.DB_URL                          | XXXXYY  | postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName} in baseencoded64  format         |
    | global.vault.address                            | XXXXYY  | http://<vault_release_name>:8200   |
@@ -157,15 +160,15 @@ Ensure all vault pods are in Ready state. Init will takes 1-2 minutes to  make v
 
 ```
 helm upgrade --install <release_name> sunbird-c-charts/ -n <namespace> --create-namespace  \
---set global.database.host="XXXXYY" \
- --set global.database.user="XXXXYY" \
- --set global.registry.database="XXXXYY" \
+--set global.database.host="<YOUR_DB_HOST_ADDRESS>" \
+ --set global.database.user="postgres" \
+ --set global.registry.database="registry" \
  --set global.registry.signature_provider="dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl" \
- --set global.secrets.DB_PASSWORD="XXXXYY" \
- --set global.secrets.DB_URL="XXXXYY" \
- --set global.vault.address="XXXXYY" \
- --set global.vault.base_url="XXXXYY" \
- --set global.vault.root_path="XXXXYY" \
+ --set global.secrets.DB_PASSWORD="TkxoTCpJLWU1NGU=" \
+ --set global.secrets.DB_URL="cG9zdGdyZXM6Ly9wb3N0Z3JlczpOTGhMKkktZTU0ZUByZHNzdGFja3NicmMyLWRhdGFiYXNlYjI2OWQ4YmItYjkyanl5bXdhdzZoLmNsdXN0ZXItY3Zla2xpdDJyajRtLmFwLXNvdXRoLTEucmRzLmFtYXpwewqdsavbmF3cy5jb206NTQzMi9zdW5iaXJ" \
+ --set global.vault.address="http://<VAULT_RELEASE_NAME>:8200" \
+ --set global.vault.base_url="http://<VAULT_RELEASE_NAME>:8200/v1" \
+ --set global.vault.root_path="http://<VAULT_RELEASE_NAME>:8200/v1/kv" \
 
 ```
 
@@ -175,7 +178,7 @@ watch -n .5 kubectl get pods -n <namespace>
 ![CPodStatus](imgs/sunbird-c-pod-status.png)
 
 ## Deploying Sunbird RC - REGISTRY_AND_CREDENTIALLING
-
+Sunbird RC - REGISTRY_AND_CREDENTIALLING deploys both registry and credentialling microservices.
 
 Execute [Install vault from hashicorp](#1-install-vault-from-hashicorp)  using new namespace
 
@@ -206,3 +209,26 @@ watch -n .5 kubectl get pods -n <namespace>
 
 ![RCPodStatus](imgs/sunbird-rc-pod-status.png)
 
+
+Follow the post installation steps to start using Sunbird RC2.0 services
+
+* [Post Installation Procedure](03-Post-Installation-Procedure.md)
+
+* NOTE:
+If Vault becomes sealed, you have the option to unseal it using the unseal token stored in Kubernetes secrets.
+
+```
+kubectl get secrets vault-unseal-key -n <namespace>
+```
+Unseal the vault pods using below command.
+
+```
+kubectl exec <vault_pod_name> -n <namespace> -- vault operator unseal <vault_unseal_key>
+```
+
+**Lastly, if you wish to clean up, run below two commands to remove all resources that were created by you.**
+```
+helm uninstall <release_name> -n <namespace>
+
+kubectl delete ns <namespace>
+```

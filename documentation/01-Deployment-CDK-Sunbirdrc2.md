@@ -9,11 +9,11 @@ The CDK comprises stacks designed to perform unique provisioning steps, making t
 | CDK Stack name           | File name/path           | Description                                                                                       |
 |--------------------------|--------------------------|---------------------------------------------------------------------------------------------------|
 | -                        | bin/sunbirdrc2-cdk.ts    | Is the entrypoint of the CDK application                                                          |
-| -                        | config.ts                | Input file for CDK Deployment including defaults ( AWS Account Number,   Region, Bucket Name etc) |
-| vpcstacksbrc2            | vpc-stack.ts             | Foundation stack creation including VPC, Subnets, Route tables, NatGW etc                         |
-| rdsstacksbrc2            | rds-stack.ts             | Creates RDS Aurora Postgresql cluster                                                             |
+| -                        | config.ts                | Input file for CDK Deployment including defaults ( AWS Account Number,   Region,repository URL etc) |
+| vpcstacksbrc2            | vpc-stack.ts             | Foundation stack creation including VPC, Subnets, Route tables, Nat Gateway etc                         |
+| rdsstacksbrc2            | rds-stack.ts             | Tp create RDS Aurora Postgresql cluster                                                             |
 | eksstacksbrc2            | eks-ec2-stack.ts         | To create EKS EC2 Cluster                                                                         |
-| sunbirdrc2helmStacksbrc2 | sunbirdrc2-helm-stack.ts | To deploy Sunbird RC helm chart                                                                   |
+| sunbirdrc2helmStacksbrc2 | sunbirdrc2-helm-stack.ts | To deploy Sunbird RC2.0 helm chart                                                                   |
 | vaulthelmstacksbrc2      | helm-vault-stack.ts      | To deploy Vault from Hashicorp                                                                    |
 | vaultinithelmstacksbrc2  | helm-vaultInit-stack     | To initialize and unseal the deployed Vault                                                       |
 
@@ -33,16 +33,16 @@ cd sunbird-rc2-aws-automation
 # Install the CDK application
 npm i
 
-# cdk bootstrap [aws://ACCOUNT-NUMBER-1/REGION-1]
-cdk bootstrap aws://ACCOUNT-NUMBER-1/REGION-1
+# cdk bootstrap [aws://<ACCOUNT-NUMBER>/<REGION>]
+cdk bootstrap aws://<ACCOUNT-NUMBER>/<REGION>
 ```
 
-#### Update mandatory environment variables, with your preferred editor open '.env' file
+#### Update mandatory environment variables, with your preferred editor. Open '.env' file in the CDK app.
 
    | ENVIRONMENT   VARIABLES   | EXAMPLE VALUE                                                                         | DESCRIPTION                                                                                                                                                            |
 |---------------------------|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | REGION                    | us-east-1                                                                             | AWS region                                                                                                                                                             |
-| ACCOUNT                   | 1.23457E+11                                                                           | AWS 12 digit account number                                                                                                                                            |
+| ACCOUNT                   | 123456789123                                                                          | AWS 12 digit account number                                                                                                                                            |
 | CIDR                      | 10.20.0.0/16                                                                          | VPC CIDR, change it as per your   environment                                                                                                                          |
 | MAX_AZS                   | 2                                                                                     | AWS Availability Zone count,   default 2                                                                                                                               |
 | RDS_USER                  | postgres                                                                              | Database user name for core   registory service, default 'postgres'                                                                                                    |
@@ -53,7 +53,7 @@ cdk bootstrap aws://ACCOUNT-NUMBER-1/REGION-1
 
 **Deploy CDK**
 ```
-# After updating the env file, run AWS CDK commands to begin with deploy
+# After updating the .env file, run AWS CDK commands to begin with deploy
 
 # emits the synthesized CloudFormation template
 cdk synth 
@@ -62,8 +62,6 @@ cdk synth
 cdk list
 
 # Deploy single stack  - vpcstacksbrc2, rdsstacksbrc2, eksstacksbrc2,sunbirdrc2helmStacksbrc2
-
-
 cdk deploy <stack_name>
 
 # Alternatively you could also deploy all stacks and CDK would handle the sequence
