@@ -43,7 +43,7 @@ kubectl get ingress -n <namespace>
 
 2. Go to Amazon Route53. Ensure, domain is already procured and hosted zone is created in Route53. Edit the **A** record by configuring the ALB DNS name.
 
-![Route53](imgs/route53_masked.png)
+![Route53Config](imgs/route53_masked_config.png)
 
 ### Configuration Complete
 Once you've these steps, your Keycloak instance is configured as required. Ensure that the URLs and settings match your specific deployment and use case. Enjoy using Keycloak for your project and begin using Sunbird RC 2.0 Swagger UI.
