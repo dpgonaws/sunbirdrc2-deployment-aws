@@ -11,7 +11,7 @@ The CDK comprises stacks designed to perform unique provisioning steps, making t
 | -                        | bin/sunbirdrc2-cdk.ts    | Is the entrypoint of the CDK application                                                          |
 | -                        | config.ts                | Input file for CDK Deployment including defaults ( AWS Account Number,   Region,repository URL etc) |
 | vpcstacksbrc2            | vpc-stack.ts             | Foundation stack creation including VPC, Subnets, Route tables, Nat Gateway etc                         |
-| rdsstacksbrc2            | rds-stack.ts             | Tp create RDS Aurora Postgresql cluster                                                             |
+| rdsstacksbrc2            | rds-stack.ts             | To create RDS Aurora Postgresql cluster                                                             |
 | eksstacksbrc2            | eks-ec2-stack.ts         | To create EKS EC2 Cluster                                                                         |
 | sunbirdrc2helmStacksbrc2 | sunbirdrc2-helm-stack.ts | To deploy Sunbird RC2.0 helm chart                                                                   |
 | vaulthelmstacksbrc2      | helm-vault-stack.ts      | To deploy Vault from Hashicorp                                                                    |
@@ -49,13 +49,13 @@ cdk bootstrap aws://<ACCOUNT-NUMBER>/<REGION>
 | RDS_PASSWORD              | NLhL*I-e54e                                                                           | Database password, used while DB   creation and passed down to Sunbrd RC services helm chart                                                                           |
 | EKS_CLUSTER_NAME          | ekscluster-sbrc2                                                                      | AWS EKS Cluster name                                                                                                                                                   |
 | ROLE_ARN                  | arn:aws:iam::123456789012:role/ AWSReservedSSO_AWSAdministratorAccess | Amazon EKS mastersRole, to be   associated with the system:masters RBAC group, giving super-user access to   the cluster                                               |
-| SUNBIRD_RC_MODULES_CHOICE | RC                                                                                    | Modules to be insalled as part   of this deployment. Values may be  **'R'** -     Registry,  **'C'** - Credentialling, **'RC'** - registryAndCredentialling. Default value is 'RC'  |
+| SUNBIRD_RC_MODULES_CHOICE | RC                                                                                    | Modules to be installed as part   of this deployment. Values may be  **'R'** -     Registry,  **'C'** - Credentialing, **'RC'** - Registry and Credentialing. Default value is 'RC'  |
 
 **Deploy CDK**
 ```
 # After updating the .env file, run AWS CDK commands to begin with deploy
 
-# emits the synthesized CloudFormation template
+# Emits the synthesized CloudFormation template
 cdk synth 
 
 # List CDK stack
