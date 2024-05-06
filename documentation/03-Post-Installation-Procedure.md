@@ -2,7 +2,7 @@
 
 ## Project Setup and Keycloak Configuration
 
-This README provides instructions for verifying EKS cluster including pod, deployment and services. It also includes steps for configuring Keycloak after its installation and generate the admin client credentials to run registry service.
+This README provides instructions for verifying EKS cluster including pods, deployments and services. It also includes steps for configuring Keycloak after its installation and generating the admin client credentials to run registry service.
 
 ### 1. Check Pod and Service Status
 
