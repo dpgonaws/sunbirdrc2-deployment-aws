@@ -27,7 +27,7 @@ helm repo add sunbird-rc2  https://dpgonaws.github.io/dpg-helm
 helm repo list
 ```
 
-#### 3. Search for Sunbrird RC Chat in Helm Repo:
+#### 3. Search for Sunbrird RC Chart in Helm Repo:
 ```
 helm search repo sunbird-rc2
 ```
@@ -83,7 +83,7 @@ helm list
 ## Deploying Sunbird RC - CREDENTIALING
 Sunbird RC - CREDENTIALING deploys only credentialing microservices.
 
-#### 1. Install vault from hashicorp
+#### 1. Install vault from HashiCorp
 
 Create a file named helm-vault-raft-values.yml and copy below content.
 
@@ -112,7 +112,7 @@ server:
 ```
 
 ```
-helm install <vault_release_name> hashicorp/vault \
+helm install <vault_release_name> HashiCorp/vault \
 --version 0.24.0 \
 --values helm-vault-raft-values.yml \
 -n <namespace> --create-namespace
@@ -180,7 +180,7 @@ watch -n .5 kubectl get pods -n <namespace>
 ## Deploying Sunbird RC - REGISTRY_AND_CREDENTIALLING
 Sunbird RC - REGISTRY_AND_CREDENTIALLING deploys both registry and credentialling microservices.
 
-Execute [Install vault from hashicorp](#1-install-vault-from-hashicorp)  using new namespace
+Execute [Install vault from HashiCorp](#1-install-vault-from-HashiCorp)  using new namespace
 
 Execute [Initialize the vault using vault-init](#2-initialize-vault-using-vault-init-chart) 
 
