@@ -16,7 +16,7 @@ Before deploying this Helm chart, ensure you have the following prerequisites in
 
 Sunbird RC - REGISTRY deploys only registry microservices.
 
-#### 1. Intialized Sunbird RC Helm Repository
+#### 1. Initialized Sunbird RC Helm Repository
 
 ```
 helm repo add sunbird-rc2  https://dpgonaws.github.io/dpg-helm
@@ -27,7 +27,7 @@ helm repo add sunbird-rc2  https://dpgonaws.github.io/dpg-helm
 helm repo list
 ```
 
-#### 3. Serach for Sunbrird RC Chat in Helm Repo:
+#### 3. Search for Sunbrird RC Chat in Helm Repo:
 ```
 helm search repo sunbird-rc2
 ```
@@ -40,9 +40,9 @@ sunbird-rc2/sunbird_rc_charts        0.0.1           0.0.13       A Helm chart f
 sunbird-rc2/vault-init               0.1.0           1.16.0       A Helm chart for Kubernetes
 ```
 
-#### 4. Helm Chart Sunbird RC Framework Deployment Required following User Inputs:
+#### 4. Helm Chart Sunbird RC Framework Deployment requires following User Inputs:
    
-   #### Helm global deployment properites:  
+   #### Helm global deployment properties:  
     
    | Secret Key                                     | Value   | Description                         |
    | ---------------------------------------------  | ------- | ----------------------------------- |
@@ -50,8 +50,8 @@ sunbird-rc2/vault-init               0.1.0           1.16.0       A Helm chart f
    | global.database.user                            | XXXXYY  | RDS/Data Username                   |
    | global.registry.database                        | XXXXYY  | RDS/Data Database                   |
    | global.registry.signature_provider              | XXXXYY  | dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl                   |   
-   | global.secrets.DB_PASSWORD                     | XXXXYY  | Database Password in baseencoded64 format                 |  
-   | global.secrets.DB_URL                          | XXXXYY  | postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName} in baseencoded64  format         |
+   | global.secrets.DB_PASSWORD                     | XXXXYY  | Database Password in Base64 encoded format                 |  
+   | global.secrets.DB_URL                          | XXXXYY  | postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName} in Base64 encoded  format         |
 
    
 #### 5. Install or Upgrade the Sunbird RC Framework via Helm Chart:
@@ -80,8 +80,8 @@ kubectl get svc
 helm list
 ```
 
-## Deploying Sunbird RC - CREDENTIALLING
-Sunbird RC - CREDENTIALLING deploys only credentialling microservices.
+## Deploying Sunbird RC - CREDENTIALING
+Sunbird RC - CREDENTIALING deploys only credentialing microservices.
 
 #### 1. Install vault from hashicorp
 
@@ -149,8 +149,8 @@ Ensure all vault pods are in Ready state. Init will takes 1-2 minutes to  make v
    | global.database.user                            | XXXXYY  | RDS/Data Username                   |
    | global.registry.database                        | XXXXYY  | RDS/Data Database                   |
    | global.registry.signature_provider              | XXXXYY  | when the module choice is **R** the value is dev.sunbirdrc.registry.service.impl.SignatureV1ServiceImpl and when the module choice is **C** or **RC**, then the value is  dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl            |   
-   | global.secrets.DB_PASSWORD                     | XXXXYY  | Database Password in baseencoded64 format                 |  
-   | global.secrets.DB_URL                          | XXXXYY  | postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName} in baseencoded64  format         |
+   | global.secrets.DB_PASSWORD                     | XXXXYY  | Database Password in Base64 encoded format                 |  
+   | global.secrets.DB_URL                          | XXXXYY  | postgres://${rdsuser}:${RDS_PASSWORD}@${rdsHost}:5432/${credentialDBName} in Base64 encoded  format         |
    | global.vault.address                            | XXXXYY  | http://<vault_release_name>:8200   |
    | global.vault.base_url                           | XXXXYY |http://<vault_release_name>:8200/v1     |
    | global.vault.root_path                          | XXXXYY  |http://<vault_release_name>:8200/v1/kv  |
