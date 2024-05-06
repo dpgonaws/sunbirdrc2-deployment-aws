@@ -2,7 +2,7 @@
 
 ## Project Setup and Keycloak Configuration
 
-This README provides instructions for verifying EKS cluster including pod, deployment and services. It also includes steps for configuring Keycloak after its installation and generate the admin client credentials to run registy service.
+This README provides instructions for verifying EKS cluster including pod, deployment and services. It also includes steps for configuring Keycloak after its installation and generate the admin client credentials to run registry service.
 
 ### 1. Check Pod and Service Status
 
@@ -33,7 +33,7 @@ The keycloak service will be available in  https://<SUNBIRD_RC2_HOSTNAME>/auth. 
 
 ### 3. Configure Domain for Sunbird RC hostname
 
-You can use any domain services to get the host name for Sunbird RC. Here, we are going to see the how hostname is configured using Amazon Route53.
+You can use any domain services to get the host name for Sunbird RC. Here, we are going to see how the hostname is configured using Amazon Route53.
 
 1. Get loadbalancer name from the deployed service by executing the below command. Copy the ALB DNS name from the results.
 
@@ -51,5 +51,5 @@ Once you've these steps, your Keycloak instance is configured as required. Ensur
 - Keycloak portal will be accessible at https://<SUNBIRD_RC2_HOSTNAME>/auth
 ![KeycloakUI](imgs/keycloak-ui.png)
 
-- Sunbird RC 2. 0 registry api portal will be accessible at https://<SUNBIRD_RC2_HOSTNAME>/swagger-ui.html
+- Sunbird RC 2.0 registry API portal will be accessible at https://<SUNBIRD_RC2_HOSTNAME>/swagger-ui.html
 ![SunbirdRC2UI](imgs/swagger-ui.png)
