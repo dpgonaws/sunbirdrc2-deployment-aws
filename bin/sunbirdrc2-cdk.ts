@@ -53,11 +53,7 @@ const eksCluster = new eksec2Stack(app, "eksstacksbrc2", {
     vpc: infra.vpc,
 });
 
-
-
-
 const moduleChoice = config.SUNBIRD_RC_MODULES_CHOICE;
-
 const credentialingChartName = "sunbird-c-charts"
 var rcchatName = "sunbird_rc_charts";
 var rcSignatureProviderName = "dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl";
@@ -98,6 +94,7 @@ const vaultInitHelm = new helmvaultinitStack(app, "vaultinithelmstacksbrc2", {
 //add dependency on Vault Helm
 vaultInitHelm.addDependency(vaultHHelm);
 
+
 // Run HELM charts for the RC2 applications in the provisioned EKS cluster
 const sunbirdRCHelm = new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     env: {
@@ -116,6 +113,7 @@ const sunbirdRCHelm = new sunbirdrc2helmStack(app, "sunbirdrc2helmStacksbrc2", {
     signatureProviderName: rcSignatureProviderName,
 
 });
+
 
 switch (moduleChoice) {
     case "RC":

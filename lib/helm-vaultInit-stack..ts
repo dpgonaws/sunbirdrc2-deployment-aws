@@ -20,7 +20,7 @@ export class helmvaultinitStack extends cdk.Stack {
         const chart = "vault-init";
         const vaultName = `${props.config.VAULT_RELEASE_NAME}-vault`;
 
-        //create vault
+        //perform vault init
         new helm.HelmChart(this, "cdkhelm", {
             cluster: eksCluster,
             chart: chart,

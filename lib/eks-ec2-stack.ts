@@ -98,7 +98,6 @@ export class eksec2Stack extends cdk.Stack {
 
         // Attach a managed policy to the role
         oidcEKSCSIRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonEBSCSIDriverPolicy"))
-        //ebs_csi_addon_role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AmazonEBSCSIDriverPolicy"))
 
         const ebscsi = new eks.CfnAddon(this, "addonEbsCsi",
             {
@@ -107,78 +106,6 @@ export class eksec2Stack extends cdk.Stack {
                 serviceAccountRoleArn: oidcEKSCSIRole.roleArn
             }
         );
-
-        /*
-                // Define the service account
-                const serviceAccount = this.eksCluster.addServiceAccount('ebscsiServiceAccount', {
-                    name: "ebs-csi-controller-sa-rc2",
-                    namespace: "kube-system",
-                    annotations: {
-                        "eks.amazonaws.com/role-arn": oidcEKSCSIRole.roleArn,
-                    }
-                });*/
-
-        /*
-        this.eksCluster.addNodegroupCapacity("custom-node-group", {
-            amiType: eks.NodegroupAmiType.AL2_X86_64,
-            instanceTypes: [new ec2.InstanceType("t2.small")],
-            desiredSize: 3,
-            diskSize: 20,
-            nodeRole: new iam.Role(this, "eksClusterNodeGroupRole", {
-                roleName: "eksClusterNodeGroupRole",
-                assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
-                managedPolicies: [
-                    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonEKSWorkerNodePolicy"),
-                    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2ContainerRegistryReadOnly"),
-                    iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonEKS_CNI_Policy"),
-                ],
-            }),
-        });
-*/
-
-        /*
-                // Managed Addon: kube-proxy
-                const kubeProxy = new eks.CfnAddon(this, "addonKubeProxy", {
-                    addonName: "kube-proxy",
-                    clusterName: this.eksCluster.clusterName,
-                });
-        
-                // Managed Addon: coredns
-                const coreDns = new eks.CfnAddon(this, "addonCoreDns", {
-                    addonName: "coredns",
-                    clusterName: this.eksCluster.clusterName,
-                });
-        
-                // Managed Addon: vpc-cni
-                const vpcCni = new eks.CfnAddon(this, "addonVpcCni", {
-                    addonName: "vpc-cni",
-                    clusterName: this.eksCluster.clusterName,
-                });
-        */
-
-
-
-
-        /*
-                      
-        ebs_csi_addon_role = iam.Role(
-            self,
-            'EbsCsiAddonRole',
-            # for Role's Trust relationships
-            assumed_by=iam.FederatedPrincipal(
-                federated=oidc_provider_arn,
-                conditions={
-                    'StringEquals': {
-                        f'{oidc_provider_url.replace("https://", "")}:sub': 'system:serviceaccount:kube-system:ebs-csi-controller-sa-rc2'
-                    }
-                },
-                assume_role_action='sts:AssumeRoleWithWebIdentity'
-            )
-        )*/
-
-
-
-
 
         new cdk.CfnOutput(this, String("OIDC-issuer"), {
             value: this.eksCluster.clusterOpenIdConnectIssuer,

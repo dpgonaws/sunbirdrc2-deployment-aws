@@ -13,6 +13,7 @@ export interface RdsStackProps extends cdk.StackProps {
   rdspassword: String;
 }
 
+// provision of RDS  
 export class rdsStack extends cdk.Stack {
   public readonly rdsSecret: string;
   public readonly rdsHost: string;
